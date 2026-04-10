@@ -14,216 +14,275 @@
 {% set cobj = ai_analysis.country_obj %}
 
 <div class="av-page">
-<div class="av-wrap">
+    <div class="av-wrap">
 
-    <!-- Top nav -->
-    <div class="av-topnav">
-        <a href="{{ url_for('ai_dashboard.index') }}" class="av-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
-            AI Dashboard
-        </a>
-        <a href="{{ url_for('ai_dashboard.analysis') }}" class="av-back">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Run New Evaluation
-        </a>
-    </div>
+        <!-- Top nav -->
+        <div class="av-topnav">
+            <a href="{{ url_for('ai_dashboard.index') }}" class="av-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5" />
+                    <path d="m12 19-7-7 7-7" />
+                </svg>
+                AI Dashboard
+            </a>
+            <a href="{{ url_for('ai_dashboard.analysis') }}" class="av-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Run New Evaluation
+            </a>
+        </div>
 
-    <!-- Hero -->
-    <div class="av-hero av-hero--{{ ai_analysis.status }}">
-        {% if cobj and cobj.iso2_code %}
-        <img class="av-hero-flag" src="https://flagcdn.com/w80/{{ cobj.iso2_code.lower() }}.png" alt="{{ ai_analysis.country }}">
-        {% else %}
-        <div class="av-hero-flag-placeholder">{{ ai_analysis.country[0] | upper }}</div>
-        {% endif %}
-        <div class="av-hero-body">
-            <div class="av-hero-eyebrow">AI Institutional Evaluation</div>
-            <div class="av-hero-country">{{ ai_analysis.country }}</div>
-            <span class="av-status-badge av-status-badge--{{ ai_analysis.status }}">
-                {{ ai_analysis.status | replace('_', ' ') }}
-            </span>
-            {% if ai_analysis.status == 'completed' %}
-            <div class="av-hero-stats">
-                <div class="av-hero-stat">
-                    <div class="av-hero-stat-value">{{ scores | length }}</div>
-                    <div class="av-hero-stat-label">Questions Scored</div>
-                </div>
-                <div class="av-hero-divider"></div>
-                <div class="av-hero-stat">
-                    <div class="av-hero-stat-value">{{ spheres | length }}</div>
-                    <div class="av-hero-stat-label">Spheres</div>
-                </div>
-                <div class="av-hero-divider"></div>
-                <div class="av-hero-stat">
-                    <div class="av-hero-stat-value">{{ meta.get('provider_used', '—') }}</div>
-                    <div class="av-hero-stat-label">Engine</div>
-                </div>
-                {% if ai_analysis.updated_at %}
-                <div class="av-hero-divider"></div>
-                <div class="av-hero-stat">
-                    <div class="av-hero-stat-value" style="font-size:0.85rem;">{{ ai_analysis.updated_at.strftime('%b %d, %Y') }}</div>
-                    <div class="av-hero-stat-label">Completed</div>
+        <!-- Hero -->
+        <div class="av-hero av-hero--{{ ai_analysis.status }}">
+            {% if cobj and cobj.iso2_code %}
+            <img class="av-hero-flag" src="https://flagcdn.com/w80/{{ cobj.iso2_code.lower() }}.png"
+                alt="{{ ai_analysis.country }}">
+            {% else %}
+            <div class="av-hero-flag-placeholder">{{ ai_analysis.country[0] | upper }}</div>
+            {% endif %}
+            <div class="av-hero-body">
+                <div class="av-hero-eyebrow">AI Institutional Evaluation</div>
+                <div class="av-hero-country">{{ ai_analysis.country }}</div>
+                <span class="av-status-badge av-status-badge--{{ ai_analysis.status }}">
+                    {{ ai_analysis.status | replace('_', ' ') }}
+                </span>
+                {% if ai_analysis.status == 'completed' %}
+                <div class="av-hero-stats">
+                    <div class="av-hero-stat">
+                        <div class="av-hero-stat-value">{{ scores | length }}</div>
+                        <div class="av-hero-stat-label">Questions Scored</div>
+                    </div>
+                    <div class="av-hero-divider"></div>
+                    <div class="av-hero-stat">
+                        <div class="av-hero-stat-value">{{ spheres | length }}</div>
+                        <div class="av-hero-stat-label">Spheres</div>
+                    </div>
+                    <div class="av-hero-divider"></div>
+                    <div class="av-hero-stat">
+                        <div class="av-hero-stat-value">{{ meta.get('provider_used', '—') }}</div>
+                        <div class="av-hero-stat-label">Engine</div>
+                    </div>
+                    {% if ai_analysis.updated_at %}
+                    <div class="av-hero-divider"></div>
+                    <div class="av-hero-stat">
+                        <div class="av-hero-stat-value" style="font-size:0.85rem;">{{
+                            ai_analysis.updated_at.strftime('%b %d, %Y') }}</div>
+                        <div class="av-hero-stat-label">Completed</div>
+                    </div>
+                    {% endif %}
                 </div>
                 {% endif %}
             </div>
-            {% endif %}
         </div>
-    </div>
 
-    {% if ai_analysis.status == 'in_progress' %}
-    <div class="av-state-banner">
-        <div class="av-state-banner-icon">⏳</div>
-        <div class="av-state-banner-title">Evaluation in Progress</div>
-        <div class="av-state-banner-sub">
-            {% if meta.get('stage') %}{{ meta.stage }}{% else %}The AI engine is evaluating this country. Refresh to check progress.{% endif %}
-            {% if meta.get('progress') %}<br><br><strong style="color:var(--ai-accent)">{{ meta.progress }}% complete</strong>{% endif %}
+        {% if ai_analysis.status == 'in_progress' %}
+        <div class="av-state-banner">
+            <div class="av-state-banner-icon">⏳</div>
+            <div class="av-state-banner-title">Evaluation in Progress</div>
+            <div class="av-state-banner-sub">
+                {% if meta.get('stage') %}{{ meta.stage }}{% else %}The AI engine is evaluating this country. Refresh to
+                check progress.{% endif %}
+                {% if meta.get('progress') %}<br><br><strong style="color:var(--ai-accent)">{{ meta.progress }}%
+                    complete</strong>{% endif %}
+            </div>
         </div>
-    </div>
 
-    {% elif ai_analysis.status == 'error' %}
-    <div class="av-state-banner">
-        <div class="av-state-banner-icon">⚠️</div>
-        <div class="av-state-banner-title" style="color:var(--ai-danger)">Evaluation Failed</div>
-        <div class="av-state-banner-sub">{{ meta.get('last_error', 'Unknown error occurred.') }}</div>
-    </div>
+        {% elif ai_analysis.status == 'error' %}
+        <div class="av-state-banner">
+            <div class="av-state-banner-icon">⚠️</div>
+            <div class="av-state-banner-title" style="color:#dc2626">Evaluation Failed</div>
+            <div class="av-state-banner-sub" style="word-break:break-word;white-space:pre-wrap">{{ meta.get('last_error', 'Unknown error occurred.') }}</div>
+        </div>
 
-    {% elif ai_analysis.status == 'completed' and scores %}
+        {% elif ai_analysis.status == 'completed' and scores %}
 
-    <!-- Sphere aggregates -->
-    {% if aggregates %}
-    <div class="av-aggregates-grid">
+        <!-- Sphere aggregates -->
+        {% if aggregates %}
+        <div class="av-aggregates-grid">
+            {% for sphere in spheres %}
+            {% set agg = aggregates.get(sphere.name, 0) | float %}
+            {% set tier = 'strong' if agg >= 0.7 else ('moderate' if agg >= 0.4 else 'weak') %}
+            <div class="av-agg-card av-agg-card--{{ tier }}">
+                <div class="av-agg-sphere-name">{{ sphere.label }}</div>
+                <div class="av-agg-score av-agg-score--{{ tier }}">{{ "%.2f"|format(agg) }}</div>
+                <div class="av-agg-bar-track">
+                    <div class="av-agg-bar-fill av-agg-bar-fill--{{ tier }}" style="width:{{ (agg * 100)|int }}%"></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Per-sphere question breakdown -->
         {% for sphere in spheres %}
-        {% set agg = aggregates.get(sphere.name, 0) | float %}
-        {% set tier = 'strong' if agg >= 0.7 else ('moderate' if agg >= 0.4 else 'weak') %}
-        <div class="av-agg-card av-agg-card--{{ tier }}">
-            <div class="av-agg-sphere-name">{{ sphere.label }}</div>
-            <div class="av-agg-score av-agg-score--{{ tier }}">{{ "%.2f"|format(agg) }}</div>
-            <div class="av-agg-bar-track">
-                <div class="av-agg-bar-fill av-agg-bar-fill--{{ tier }}" style="width:{{ (agg * 100)|int }}%"></div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Per-sphere question breakdown -->
-    {% for sphere in spheres %}
-    {% set sphere_agg = aggregates.get(sphere.name, 0) | float %}
-    {% set tier = 'strong' if sphere_agg >= 0.7 else ('moderate' if sphere_agg >= 0.4 else 'weak') %}
-    {% set sphere_questions = sphere.questions %}
-    {% if sphere_questions %}
-    <div class="av-sphere-block">
-        <div class="av-sphere-header">
-            <div class="av-sphere-header-left">
-                <span class="av-sphere-name">{{ sphere.label }}</span>
-                <span class="av-sphere-q-count">{{ sphere_questions | length }} questions</span>
-            </div>
-            {% if aggregates.get(sphere.name) is not none %}
-            <span class="av-sphere-agg-pill av-sphere-agg-pill--{{ tier }}">{{ "%.2f"|format(sphere_agg) }}</span>
-            {% endif %}
-        </div>
-        {% for question in sphere_questions %}
-        {% set qid = question.id | string %}
-        {% set raw_score = scores.get(qid) %}
-        {% set reasoning = comments.get(qid, '') %}
-        <div class="av-question-row">
-            <div>
-                <div class="av-q-id">Q{{ question.id }} · {{ question.type or 'RULE' }}</div>
-                <div class="av-q-text">{{ question.content }}</div>
-                {% if reasoning %}
-                <div class="av-q-reasoning">{{ reasoning }}</div>
-                {% endif %}
-            </div>
-            <div class="av-q-score-block">
-                {% if raw_score is not none and raw_score != 'NA' %}
-                {% set s = raw_score | int %}
-                {% set norm = ((s - 1) / 6) %}
-                {% set stier = 'strong' if norm >= 0.7 else ('moderate' if norm >= 0.4 else 'weak') %}
-                {% set score_color = '#34d399' if stier == 'strong' else ('#fbbf24' if stier == 'moderate' else '#f87171') %}
-                <div class="av-q-score-num" style="color:{{ score_color }}">{{ s }}</div>
-                <div class="av-q-score-denom">out of 7</div>
-                <div class="av-q-score-bar">
-                    <div class="av-q-score-bar-fill" style="width:{{ ((s/7)*100)|int }}%;background:{{ score_color }}"></div>
+        {% set sphere_agg = aggregates.get(sphere.name, 0) | float %}
+        {% set tier = 'strong' if sphere_agg >= 0.7 else ('moderate' if sphere_agg >= 0.4 else 'weak') %}
+        {% set sphere_questions = sphere.questions %}
+        {% if sphere_questions %}
+        <div class="av-sphere-block">
+            <div class="av-sphere-header">
+                <div class="av-sphere-header-left">
+                    <span class="av-sphere-name">{{ sphere.label }}</span>
+                    <span class="av-sphere-q-count">{{ sphere_questions | length }} questions</span>
                 </div>
-                {% else %}
-                <div class="av-q-na">N/A</div>
+                {% if aggregates.get(sphere.name) is not none %}
+                <span class="av-sphere-agg-pill av-sphere-agg-pill--{{ tier }}">{{ "%.2f"|format(sphere_agg) }}</span>
                 {% endif %}
             </div>
+            {% for question in sphere_questions %}
+            {% set qid = question.id | string %}
+            {% set raw_score = scores.get(qid) %}
+            {% set reasoning = comments.get(qid, '') %}
+            <div class="av-question-row">
+                <div>
+                    <div class="av-q-id">Q{{ question.id }} · {{ question.type or 'RULE' }}</div>
+                    <div class="av-q-text">{{ question.content }}</div>
+                    {% if reasoning %}
+                    <div class="av-q-reasoning" style="color: black;font-size: 0.88rem;"><span
+                            style="background: rgb(202, 177, 162);padding: 0.2rem;border-radius: 0.2rem;">{{ reasoning
+                            }}</span></div>
+                    {% endif %}
+                </div>
+                <div class="av-q-score-block">
+                    {% if raw_score is not none and raw_score != 'NA' %}
+                    {% set s = raw_score | int %}
+                    {% set norm = ((s - 1) / 6) %}
+                    {% set stier = 'strong' if norm >= 0.7 else ('moderate' if norm >= 0.4 else 'weak') %}
+                    {% set score_color = '#34d399' if stier == 'strong' else ('#fbbf24' if stier == 'moderate' else
+                    '#f87171') %}
+                    <div class="av-q-score-num" style="color:{{ score_color }}">{{ s }}</div>
+                    <div class="av-q-score-denom">out of 7</div>
+                    <div class="av-q-score-bar">
+                        <div class="av-q-score-bar-fill"
+                            style="width:{{ ((s/7)*100)|int }}%;background:{{ score_color }}"></div>
+                    </div>
+                    {% else %}
+                    <div class="av-q-na">N/A</div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
         </div>
+        {% endif %}
         {% endfor %}
-    </div>
-    {% endif %}
-    {% endfor %}
 
-    <!-- Metadata -->
-    <div class="av-meta-block">
-        <div>
-            <div class="av-meta-item-label">Engine</div>
-            <div class="av-meta-item-value">{{ meta.get('provider_used', '—') }}</div>
+        <!-- Metadata -->
+        <div class="av-meta-block">
+            <div>
+                <div class="av-meta-item-label">Engine</div>
+                <div class="av-meta-item-value">{{ meta.get('provider_used', '—') }}</div>
+            </div>
+            {% if meta.get('model_used') %}
+            <div>
+                <div class="av-meta-item-label">Model</div>
+                <div class="av-meta-item-value">{{ meta.get('model_used') }}</div>
+            </div>
+            {% endif %}
+            <div>
+                <div class="av-meta-item-label">Completed At</div>
+                <div class="av-meta-item-value">{{ meta.get('completion_timestamp', '—')[:19] | replace('T', ' ') if
+                    meta.get('completion_timestamp') else '—' }}</div>
+            </div>
+            <div>
+                <div class="av-meta-item-label">Questions Scored</div>
+                <div class="av-meta-item-value">{{ scores | length }}</div>
+            </div>
+            <div>
+                <div class="av-meta-item-label">With Reasoning</div>
+                <div class="av-meta-item-value">{{ comments | length }}</div>
+            </div>
         </div>
-        {% if meta.get('model_used') %}
-        <div>
-            <div class="av-meta-item-label">Model</div>
-            <div class="av-meta-item-value">{{ meta.get('model_used') }}</div>
+
+        <!-- Raw API Sample -->
+        {% if meta.get('sample_raw_request') or meta.get('sample_raw_response') %}
+        <div class="av-raw-section">
+            <div class="av-raw-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                </svg>
+                Raw API Communication
+                <span class="av-raw-badge">{{ meta.get('provider_used', '') }}{% if meta.get('model_used') %} / {{
+                    meta.get('model_used') }}{% endif %}</span>
+            </div>
+
+            {% if meta.get('sample_raw_endpoint') %}
+            <div class="av-raw-endpoint">
+                <span class="av-raw-method">POST</span>
+                <span class="av-raw-url">{{ meta.get('sample_raw_endpoint') }}</span>
+            </div>
+            {% endif %}
+
+            <details class="av-raw-details">
+                <summary class="av-raw-summary">
+                    <span class="av-raw-summary-label">Request Payload</span>
+                    <span class="av-raw-summary-hint">sent to AI provider</span>
+                    <svg class="av-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </summary>
+                <pre class="av-raw-pre av-raw-pre--req">{{ meta.get('sample_raw_request') | tojson(indent=2) }}</pre>
+            </details>
+
+            <details class="av-raw-details">
+                <summary class="av-raw-summary">
+                    <span class="av-raw-summary-label">Response Received</span>
+                    <span class="av-raw-summary-hint">raw API response</span>
+                    <svg class="av-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </summary>
+                <pre class="av-raw-pre av-raw-pre--res">{{ meta.get('sample_raw_response') | tojson(indent=2) }}</pre>
+            </details>
         </div>
         {% endif %}
-        <div>
-            <div class="av-meta-item-label">Completed At</div>
-            <div class="av-meta-item-value">{{ meta.get('completion_timestamp', '—')[:19] | replace('T', ' ') if meta.get('completion_timestamp') else '—' }}</div>
-        </div>
-        <div>
-            <div class="av-meta-item-label">Questions Scored</div>
-            <div class="av-meta-item-value">{{ scores | length }}</div>
-        </div>
-        <div>
-            <div class="av-meta-item-label">With Reasoning</div>
-            <div class="av-meta-item-value">{{ comments | length }}</div>
-        </div>
-    </div>
 
-    <!-- Raw API Sample -->
-    {% if meta.get('sample_raw_request') or meta.get('sample_raw_response') %}
-    <div class="av-raw-section">
-        <div class="av-raw-header">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            Raw API Communication
-            <span class="av-raw-badge">{{ meta.get('provider_used', '') }}{% if meta.get('model_used') %} / {{ meta.get('model_used') }}{% endif %}</span>
-        </div>
-
-        {% if meta.get('sample_raw_endpoint') %}
-        <div class="av-raw-endpoint">
-            <span class="av-raw-method">POST</span>
-            <span class="av-raw-url">{{ meta.get('sample_raw_endpoint') }}</span>
+        {% else %}
+        <div class="av-state-banner">
+            <div class="av-state-banner-icon">📋</div>
+            <div class="av-state-banner-title">No Data Yet</div>
+            <div class="av-state-banner-sub">This evaluation has not been run yet.</div>
         </div>
         {% endif %}
 
-        <details class="av-raw-details">
-            <summary class="av-raw-summary">
-                <span class="av-raw-summary-label">Request Payload</span>
-                <span class="av-raw-summary-hint">sent to AI provider</span>
-                <svg class="av-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </summary>
-            <pre class="av-raw-pre av-raw-pre--req">{{ meta.get('sample_raw_request') | tojson(indent=2) }}</pre>
-        </details>
-
-        <details class="av-raw-details">
-            <summary class="av-raw-summary">
-                <span class="av-raw-summary-label">Response Received</span>
-                <span class="av-raw-summary-hint">raw API response</span>
-                <svg class="av-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            </summary>
-            <pre class="av-raw-pre av-raw-pre--res">{{ meta.get('sample_raw_response') | tojson(indent=2) }}</pre>
-        </details>
     </div>
-    {% endif %}
-
-    {% else %}
-    <div class="av-state-banner">
-        <div class="av-state-banner-icon">📋</div>
-        <div class="av-state-banner-title">No Data Yet</div>
-        <div class="av-state-banner-sub">This evaluation has not been run yet.</div>
-    </div>
-    {% endif %}
-
-</div>
 </div>
 {% endblock %}
+
+{% if ai_analysis.status == 'in_progress' %}
+{% block scripts %}
+<script>
+    (function () {
+        const analysisId = {{ ai_analysis.id }};
+        const intervalMs = 3000;
+        let attempts = 0;
+        const maxAttempts = 100; // 5 minutes
+
+        async function checkStatus() {
+            attempts++;
+            if (attempts > maxAttempts) return; // give up after 5 minutes
+            try {
+                const res = await fetch(`/ai/analysis/${analysisId}/status`);
+                // Stop polling on auth loss or missing record — no point retrying.
+                if (res.status === 403 || res.status === 404) return;
+                if (!res.ok) { setTimeout(checkStatus, intervalMs); return; }
+                const data = await res.json();
+                if (data.completed || data.error) {
+                    location.reload();
+                } else {
+                    setTimeout(checkStatus, intervalMs);
+                }
+            } catch (e) {
+                setTimeout(checkStatus, intervalMs);
+            }
+        }
+
+        setTimeout(checkStatus, intervalMs);
+    })();
+</script>
+{% endblock %}
+{% endif %}

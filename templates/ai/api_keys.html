@@ -4,18 +4,10 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-user.css') }}">
-<!-- 
-  =============================================================================
-  AI API KEYS STYLES (.ai-key-*)
-  Strictly scoped to ai/api_keys.html ONLY. Zero inheritance.
-  =============================================================================
--->
-
 {% endblock %}
 
 {% block content %}
-<section id="dstair-ai-api-keys" class="ai-key-page" x-data="apiKeyManager()">
-    <!-- Background -->
+<section id="dstair-ai-api-keys" class="ai-key-page">
     <div class="ai-key-bg">
         <div class="ai-key-grid"></div>
         <div class="ai-key-orb"></div>
@@ -38,9 +30,11 @@
         <div class="ai-key-cards">
             {% for provider_id, meta in providers.items() %}
             {% set key_list = keys_by_provider.get(provider_id, []) %}
-            <div id="provider-{{ provider_id }}" class="ai-key-card {% if key_list %}ai-key-card--active{% endif %}"
-                x-data="{ editing: {% if not key_list %}true{% else %}false{% endif %}, newKey: '', editingKeyId: null }" data-provider="{{ provider_id }}">
-                
+            <div id="provider-{{ provider_id }}"
+                 class="ai-key-card {% if key_list %}ai-key-card--active{% endif %}"
+                 data-provider="{{ provider_id }}"
+                 data-editing="{{ 'false' if key_list else 'true' }}">
+
                 <div class="ai-key-chdr">
                     <div class="ai-key-cinfo">
                         <div class="ai-key-cicon">{{ meta.icon }}</div>
@@ -61,31 +55,40 @@
                     <div class="ai-key-krow" data-key-id="{{ key.id }}">
                         <div class="ai-key-mask">{{ key.masked_key }}</div>
                         <div class="ai-key-acts">
-                            <button class="ai-key-btn" @click="toggleKey('{{ key.id }}')">{% if key.is_active %}Disable{% else %}Enable{% endif %}</button>
-                            <button class="ai-key-btn" @click="editing = true; newKey = ''; editingKeyId = '{{ key.id }}'">Edit</button>
-                            <button class="ai-key-btn" @click="reorderProviderKey('{{ provider_id }}', '{{ key.id }}', -1)">↑</button>
-                            <button class="ai-key-btn" @click="reorderProviderKey('{{ provider_id }}', '{{ key.id }}', 1)">↓</button>
-                            <button class="ai-key-btn ai-key-btn--del" @click="deleteKey('{{ key.id }}')">Delete</button>
+                            <button class="ai-key-btn"
+                                data-action="toggle" data-key-id="{{ key.id }}">
+                                {% if key.is_active %}Disable{% else %}Enable{% endif %}
+                            </button>
+                            <button class="ai-key-btn"
+                                data-action="edit" data-key-id="{{ key.id }}">Edit</button>
+                            <button class="ai-key-btn"
+                                data-action="up" data-provider="{{ provider_id }}" data-key-id="{{ key.id }}">↑</button>
+                            <button class="ai-key-btn"
+                                data-action="down" data-provider="{{ provider_id }}" data-key-id="{{ key.id }}">↓</button>
+                            <button class="ai-key-btn ai-key-btn--del"
+                                data-action="delete" data-key-id="{{ key.id }}">Delete</button>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-                
-                <!-- Add another key button -->
-                <button x-show="!editing" class="ai-key-add" @click="editing = true; newKey = ''; editingKeyId = null">
+
+                <button class="ai-key-add" data-action="open-add"
+                        style="{{ 'display:none' if not key_list else '' }}">
                     <span class="ai-key-addico">+</span>
                     Add another {{ meta.label }} key
                 </button>
                 {% endif %}
 
-                <!-- Input Row (for new key or editing) -->
-                <div x-show="editing" class="ai-key-inp-row">
-                    <input type="password" class="ai-key-inp" x-model="newKey"
-                        placeholder="{{ meta.placeholder }}" @keydown.enter="saveKey('{{ provider_id }}', newKey)">
-                    <button class="ai-key-save" @click="saveKey('{{ provider_id }}', newKey, editingKeyId)">Save</button>
+                <!-- Input row -->
+                <div class="ai-key-inp-row" style="{{ '' if not key_list else 'display:none' }}">
+                    <input type="password" class="ai-key-inp"
+                           placeholder="{{ meta.placeholder }}"
+                           data-provider="{{ provider_id }}">
+                    <button class="ai-key-save"
+                            data-action="save" data-provider="{{ provider_id }}">Save</button>
                 </div>
 
-                <div x-show="!editing" class="ai-key-bot">
+                <div class="ai-key-bot" style="{{ 'display:none' if not key_list else '' }}">
                     <a href="{{ meta.docs_url }}" target="_blank" class="ai-key-docs">Get your API key &rarr;</a>
                 </div>
 
@@ -98,105 +101,159 @@
 
 {% block scripts %}
 <script>
-    function apiKeyManager() {
-        return {
-            async saveKey(provider, key, keyId = null) {
-                if (!key.trim()) {
-                    if(typeof showToast === 'function') showToast('Please enter an API key.', 'error');
-                    else alert('Please enter an API key.');
-                    return;
-                }
-                try {
-                    const payload = { provider, api_key: key.trim() };
-                    if (keyId) {
-                        payload.key_id = keyId;
-                    }
-                    const res = await fetch('{{ url_for("ai_dashboard.save_api_key") }}', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
-                        body: JSON.stringify(payload)
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        if(typeof showToast === 'function') showToast(data.message, 'success');
-                        setTimeout(() => location.reload(), 800);
-                    } else {
-                        if(typeof showToast === 'function') showToast(data.error, 'error');
-                    }
-                } catch (e) {
-                    if(typeof showToast === 'function') showToast('Network error.', 'error');
-                }
-            },
-            async toggleKey(keyId) {
-                try {
-                    const res = await fetch(`/ai/api-keys/${keyId}/toggle`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
-                        body: JSON.stringify({})
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        if(typeof showToast === 'function') showToast(`Key ${data.is_active ? 'enabled' : 'disabled'}.`, 'success');
-                        setTimeout(() => location.reload(), 800);
-                    } else {
-                        if(typeof showToast === 'function') showToast(data.error, 'error');
-                    }
-                } catch (e) {
-                    if(typeof showToast === 'function') showToast('Network error.', 'error');
-                }
-            },
-            async deleteKey(keyId) {
-                if (!confirm('Delete this API key?')) return;
-                try {
-                    const res = await fetch(`/ai/api-keys/${keyId}/delete`, {
-                        method: 'DELETE',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
-                        body: JSON.stringify({})
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        if(typeof showToast === 'function') showToast(data.message, 'success');
-                        setTimeout(() => location.reload(), 800);
-                    } else {
-                        if(typeof showToast === 'function') showToast(data.error, 'error');
-                    }
-                } catch (e) {
-                    if(typeof showToast === 'function') showToast('Network error.', 'error');
-                }
-            },
+(function () {
 
-            async reorderProviderKey(provider, keyId, direction) {
-                const container = document.querySelector(`#provider-${provider}`);
-                if (!container) return;
+    var SAVE_URL    = '{{ url_for("ai_dashboard.save_api_key") }}';
+    var REORDER_URL = '{{ url_for("ai_dashboard.reorder_api_keys") }}';
 
-                const keys = Array.from(container.querySelectorAll('.ai-key-krow')).map(el => el.dataset.keyId);
-                const currentIndex = keys.indexOf(keyId.toString());
-                if (currentIndex === -1) return;
+    /* ── helpers ── */
+    function toast(msg, t) { if (typeof showToast === 'function') showToast(msg, t); }
 
-                const targetIndex = currentIndex + direction;
-                if (targetIndex < 0 || targetIndex >= keys.length) return;
+    function reloadSoon(ms) { setTimeout(function () { location.reload(); }, ms || 800); }
 
-                const reordered = [...keys];
-                [reordered[currentIndex], reordered[targetIndex]] = [reordered[targetIndex], reordered[currentIndex]];
+    function getCard(el) { return el.closest('.ai-key-card'); }
 
-                try {
-                    const res = await fetch('{{ url_for("ai_dashboard.reorder_api_keys") }}', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
-                        body: JSON.stringify({ order: reordered })
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        if(typeof showToast === 'function') showToast(data.message, 'success');
-                        setTimeout(() => location.reload(), 300);
-                    } else {
-                        if(typeof showToast === 'function') showToast(data.error, 'error');
-                    }
-                } catch (e) {
-                    if(typeof showToast === 'function') showToast('Network error.', 'error');
-                }
-            }
-        };
+    function getInput(card) { return card.querySelector('.ai-key-inp'); }
+
+    function setEditing(card, on) {
+        var inp  = card.querySelector('.ai-key-inp-row');
+        var add  = card.querySelector('[data-action="open-add"]');
+        var bot  = card.querySelector('.ai-key-bot');
+        if (inp) inp.style.display = on ? 'flex' : 'none';
+        if (add) add.style.display = on ? 'none' : '';
+        if (bot) bot.style.display = on ? 'none' : '';
+        card.dataset.editing = on ? 'true' : 'false';
     }
+
+    /* ── save ── */
+    function saveKey(provider, keyValue, keyId) {
+        if (!keyValue.trim()) { toast('Please enter an API key.', 'error'); return; }
+        var payload = { provider: provider, api_key: keyValue.trim() };
+        if (keyId) payload.key_id = keyId;
+
+        fetch(SAVE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify(payload)
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (d.success) { toast(d.message, 'success'); reloadSoon(); }
+            else           { toast(d.error, 'error'); }
+        })
+        .catch(function () { toast('Network error.', 'error'); });
+    }
+
+    /* ── toggle ── */
+    function toggleKey(keyId) {
+        fetch('/ai/api-keys/' + keyId + '/toggle', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify({})
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (d.success) { toast('Key ' + (d.is_active ? 'enabled' : 'disabled') + '.', 'success'); reloadSoon(); }
+            else           { toast(d.error, 'error'); }
+        })
+        .catch(function () { toast('Network error.', 'error'); });
+    }
+
+    /* ── delete ── */
+    function deleteKey(keyId) {
+        if (!confirm('Delete this API key?')) return;
+        fetch('/ai/api-keys/' + keyId + '/delete', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify({})
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (d.success) { toast(d.message, 'success'); reloadSoon(); }
+            else           { toast(d.error, 'error'); }
+        })
+        .catch(function () { toast('Network error.', 'error'); });
+    }
+
+    /* ── reorder ── */
+    function reorderKey(provider, keyId, direction) {
+        var container = document.getElementById('provider-' + provider);
+        if (!container) return;
+        var rows = Array.from(container.querySelectorAll('.ai-key-krow'));
+        var keys = rows.map(function (el) { return el.dataset.keyId; });
+        var idx  = keys.indexOf(String(keyId));
+        if (idx === -1) return;
+        var target = idx + direction;
+        if (target < 0 || target >= keys.length) return;
+        var reordered = keys.slice();
+        var tmp = reordered[idx]; reordered[idx] = reordered[target]; reordered[target] = tmp;
+
+        fetch(REORDER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify({ order: reordered })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (d.success) { toast(d.message, 'success'); reloadSoon(300); }
+            else           { toast(d.error, 'error'); }
+        })
+        .catch(function () { toast('Network error.', 'error'); });
+    }
+
+    /* ── event delegation ── */
+    document.getElementById('dstair-ai-api-keys').addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-action]');
+        if (!btn) return;
+
+        var action   = btn.dataset.action;
+        var card     = getCard(btn);
+        var provider = btn.dataset.provider || (card && card.dataset.provider);
+        var keyId    = btn.dataset.keyId;
+
+        if (action === 'save') {
+            var inp = card && getInput(card);
+            saveKey(provider, inp ? inp.value : '', card && card.dataset.editingKeyId || null);
+
+        } else if (action === 'toggle') {
+            toggleKey(keyId);
+
+        } else if (action === 'delete') {
+            deleteKey(keyId);
+
+        } else if (action === 'up') {
+            reorderKey(provider, keyId, -1);
+
+        } else if (action === 'down') {
+            reorderKey(provider, keyId, 1);
+
+        } else if (action === 'edit') {
+            if (card) {
+                card.dataset.editingKeyId = keyId;
+                setEditing(card, true);
+                var inp = getInput(card);
+                if (inp) { inp.value = ''; inp.focus(); }
+            }
+
+        } else if (action === 'open-add') {
+            if (card) {
+                card.dataset.editingKeyId = '';
+                setEditing(card, true);
+                var inp = getInput(card);
+                if (inp) { inp.value = ''; inp.focus(); }
+            }
+        }
+    });
+
+    /* ── enter key on inputs ── */
+    document.querySelectorAll('.ai-key-inp').forEach(function (inp) {
+        inp.addEventListener('keydown', function (e) {
+            if (e.key !== 'Enter') return;
+            var card = getCard(inp);
+            saveKey(inp.dataset.provider, inp.value, card && card.dataset.editingKeyId || null);
+        });
+    });
+
+})();
 </script>
 {% endblock %}

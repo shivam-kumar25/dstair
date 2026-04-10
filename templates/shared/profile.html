@@ -231,7 +231,7 @@
     .profile-cards {
         position: relative;
         z-index: 10;
-        max-width: 48rem;
+        max-width: 54rem;
         width: 100%;
         margin: 0 auto;
         display: grid;
@@ -280,7 +280,7 @@
     }
 
     .profile-email {
-        color: rgba(10, 25, 47, 0.5);
+        color: rgba(10, 25, 47, 0.9);
         font-family: 'Inter', sans-serif;
         font-weight: 300;
         font-size: 1rem;
@@ -354,17 +354,17 @@
     }
 
     .profile-detail-row__label {
-        font-size: 0.625rem;
+        font-size: 0.825rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.2em;
-        color: rgba(10, 25, 47, 0.4);
+        color: #520000;
     }
 
     .profile-detail-row__value {
         font-size: 0.875rem;
         font-weight: 500;
-        color: #0A192F;
+        color: #000000;
     }
 
     .profile-detail-row__value--empty {
@@ -374,8 +374,8 @@
     }
 
     .profile-detail-row__value--light {
-        color: rgba(10, 25, 47, 0.5);
-        font-weight: 300;
+        color: rgba(10, 25, 47, 0.9);
+        font-weight: 800;
     }
 
     .security-action-btn {
@@ -841,18 +841,19 @@
         <div class="onboarding-back">
             {% if user.is_admin %}
             <a href="{{ url_for('admin.dashboard') }}" class="onboarding-back__link">
-            {% elif user.is_ai %}
-            <a href="{{ url_for('ai_dashboard.index') }}" class="onboarding-back__link">
-            {% else %}
-            <a href="{{ url_for('dashboard.index', username=user.user_account_unique_username_string) }}" class="onboarding-back__link">
-            {% endif %}
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5" />
-                    <path d="m12 19-7-7 7-7" />
-                </svg>
-                Back to Dashboard
-            </a>
+                {% elif user.is_ai %}
+                <a href="{{ url_for('ai_dashboard.index') }}" class="onboarding-back__link">
+                    {% else %}
+                    <a href="{{ url_for('dashboard.index', username=user.user_account_unique_username_string) }}"
+                        class="onboarding-back__link">
+                        {% endif %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 12H5" />
+                            <path d="m12 19-7-7 7-7" />
+                        </svg>
+                        Back to Dashboard
+                    </a>
         </div>
 
     </div>
@@ -890,7 +891,8 @@
                     <div class="profile-avatar-overlay">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="white" stroke-width="2" class="opacity-80">
-                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z">
+                            </path>
                             <circle cx="12" cy="13" r="4"></circle>
                         </svg>
                     </div>
@@ -904,7 +906,8 @@
                     <label for="profileImageInput" class="profile-avatar-label">Change Photo</label>
                     <p class="profile-avatar-hint">Images must be smaller than 2MB.</p>
                 </div>
-                <input type="file" id="profileImageInput" name="profile_image" class="hidden" accept="image/jpeg, image/png, image/webp" onchange="handleImagePreview(event)">
+                <input type="file" id="profileImageInput" name="profile_image" class="hidden"
+                    accept="image/jpeg, image/png, image/webp" onchange="handleImagePreview(event)">
                 <p id="uploadError" class="profile-upload-error"></p>
             </div>
 

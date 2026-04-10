@@ -286,82 +286,72 @@
     }
 
     .hiw-sph-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 5rem;
+        border: 1px solid transparent;
+        border-radius: 1.5rem;
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.03);
-        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        position: relative;
-        border-color: rgba(16, 185, 129, 0.5);
-        transform: translateY(-10px);
-        box-shadow: 0 30px 70px rgba(16, 185, 129, 0.12), 0 0 0 1px rgba(16, 185, 129, 0.1);
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.5);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
     }
 
+   
 
-    .hiw-sph-img-wrap {
-        height: 14rem;
-        position: relative;
-        background: #0f172a;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
+    .hiw-sph-card:nth-child(1) { background: #fef9f0; border-color: #fde68a; }
+    .hiw-sph-card:nth-child(2) { background: #f0fdf4; border-color: #bbf7d0; }
+    .hiw-sph-card:nth-child(3) { background: #eff6ff; border-color: #bfdbfe; }
+    .hiw-sph-card:nth-child(4) { background: #fdf4ff; border-color: #e9d5ff; }
+    .hiw-sph-card:nth-child(5) { background: #fff1f2; border-color: #fecdd3; }
+    .hiw-sph-card:nth-child(6) { background: #f0fdfa; border-color: #99f6e4; }
+    .hiw-sph-card:nth-child(7) { background: #fffbeb; border-color: #fde68a; }
+    .hiw-sph-card:nth-child(8) { background: #f0f9ff; border-color: #bae6fd; }
+    .hiw-sph-card:nth-child(9) { background: #fefce8; border-color: #fef08a; }
 
-    .hiw-sph-img {
+
+    /* Top accent bar */
+    .hiw-sph-accent {
+        height: 4px;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: saturate(0.8) brightness(1.2);
+        flex-shrink: 0;
+        transition: height 0.3s ease;
     }
 
-    
+    .hiw-sph-card:nth-child(1) .hiw-sph-accent { background: linear-gradient(90deg, #b45309, #f59e0b); }
+    .hiw-sph-card:nth-child(2) .hiw-sph-accent { background: linear-gradient(90deg, #059669, #34d399); }
+    .hiw-sph-card:nth-child(3) .hiw-sph-accent { background: linear-gradient(90deg, #1d4ed8, #60a5fa); }
+    .hiw-sph-card:nth-child(4) .hiw-sph-accent { background: linear-gradient(90deg, #7c3aed, #c084fc); }
+    .hiw-sph-card:nth-child(5) .hiw-sph-accent { background: linear-gradient(90deg, #be123c, #fb7185); }
+    .hiw-sph-card:nth-child(6) .hiw-sph-accent { background: linear-gradient(90deg, #0f766e, #2dd4bf); }
+    .hiw-sph-card:nth-child(7) .hiw-sph-accent { background: linear-gradient(90deg, #b45309, #fbbf24); }
+    .hiw-sph-card:nth-child(8) .hiw-sph-accent { background: linear-gradient(90deg, #0369a1, #38bdf8); }
+    .hiw-sph-card:nth-child(9) .hiw-sph-accent { background: linear-gradient(90deg, #854d0e, #eab308); }
 
-    .hiw-sph-img-grad {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, #0f172a 0%, rgba(15, 23, 42, 0.5) 55%, transparent 100%);
+    .hiw-sph-num {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 0.875rem;
+        display: block;
+        opacity: 0.6;
     }
 
-    .hiw-sph-ico {
-        position: absolute;
-        bottom: 1.25rem;
-        left: 1.5rem;
-        width: 3.25rem;
-        height: 3.25rem;
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 1rem;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .hiw-sph-ico svg {
-        width: 1.25rem;
-        height: 1.25rem;
-    }
-
-    .hiw-sph-card:hover .hiw-sph-ico {
-        background: #10b981;
-        border-color: #10b981;
-        transform: scale(1.15) rotate(-5deg);
-        box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4);
-    }
+    .hiw-sph-card:nth-child(1) .hiw-sph-num { color: #b45309; }
+    .hiw-sph-card:nth-child(2) .hiw-sph-num { color: #059669; }
+    .hiw-sph-card:nth-child(3) .hiw-sph-num { color: #1d4ed8; }
+    .hiw-sph-card:nth-child(4) .hiw-sph-num { color: #7c3aed; }
+    .hiw-sph-card:nth-child(5) .hiw-sph-num { color: #be123c; }
+    .hiw-sph-card:nth-child(6) .hiw-sph-num { color: #0f766e; }
+    .hiw-sph-card:nth-child(7) .hiw-sph-num { color: #b45309; }
+    .hiw-sph-card:nth-child(8) .hiw-sph-num { color: #0369a1; }
+    .hiw-sph-card:nth-child(9) .hiw-sph-num { color: #854d0e; }
 
     .hiw-sph-body {
-        padding: 2.25rem 2.5rem 2.75rem;
+        padding: 2rem 2rem 2.25rem;
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        background: #ffffff;
-        border-top: 1px solid #f1f5f9;
     }
 
     .hiw-sph-h3 {
@@ -889,199 +879,74 @@
         <div class="hiw-sph-grid">
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/constution.jpg') }}"
-                        alt="Constitution" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                            <polyline points="14 2 14 8 20 8" />
-                            <line x1="16" y1="13" x2="8" y2="13" />
-                            <line x1="16" y1="17" x2="8" y2="17" />
-                            <polyline points="10 9 9 9 8 9" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Constitution</h3>
-                    <p class="hiw-sph-p">The basic laws and principles of the state, which determine the powers and
-                        duties of the government and its various branches and guarantee rights to people in it. In
-                        addition to the rules within the Constitution itself, this sphere addresses the institutions
-                        that create, maintain and modify it.</p>
+                    <p class="hiw-sph-p">The basic laws and principles of the state, which determine the powers and duties of the government and its various branches and guarantee rights to people in it. In addition to the rules within the Constitution itself, this sphere addresses the institutions that create, maintain and modify it.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/legislature.jpg') }}"
-                        alt="Legislature" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M3 21h18" />
-                            <path d="M5 21V7l8-4 8 4v14" />
-                            <path d="M5 7h14" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Legislature</h3>
-                    <p class="hiw-sph-p">A branch of government whose persons have the authority to create laws for the
-                        state. Ideally, the Legislature is elected by some consensual method, appropriately reflects the
-                        citizenry that it represents and produces quality legislation that is subject to some level of
-                        review by the Courts and the Executive.</p>
+                    <p class="hiw-sph-p">A branch of government whose persons have the authority to create laws for the state. Ideally, the Legislature is elected by some consensual method, appropriately reflects the citizenry that it represents and produces quality legislation that is subject to some level of review by the Courts and the Executive.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/executive.jpg') }}"
-                        alt="Executive" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Executive</h3>
-                    <p class="hiw-sph-p">A branch of government, led by the head of state, which is charged with
-                        carrying out and enforcing the laws of the state, as well as various other powers which may
-                        include diplomatic representation, commanding the armed forces, signing treaties and appointing
-                        and managing members of the public administration.</p>
+                    <p class="hiw-sph-p">A branch of government, led by the head of state, which is charged with carrying out and enforcing the laws of the state, as well as various other powers which may include diplomatic representation, commanding the armed forces, signing treaties and appointing and managing members of the public administration.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/publicAdministration.jpg') }}"
-                        alt="Public Administration" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Public Administration</h3>
-                    <p class="hiw-sph-p">Entails all non-political public employees charged with delivering public
-                        services. This includes police, fire, rescue, unemployment insurance administration, retirement
-                        insurance administration, national hospital systems, permit issuers, tax collectors, and so on.
-                    </p>
+                    <p class="hiw-sph-p">Entails all non-political public employees charged with delivering public services. This includes police, fire, rescue, unemployment insurance administration, retirement insurance administration, national hospital systems, permit issuers, tax collectors, and so on.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/court.jpg') }}" alt="Courts"
-                        class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 3h12l-2 9H8z" />
-                            <path d="M6 12v3a6 6 0 0 0 12 0v-3" />
-                            <line x1="12" y1="3" x2="12" y2="21" />
-                            <path d="M2 21h20" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Courts</h3>
-                    <p class="hiw-sph-p">The rules and practices responsible for delivering justice according to the
-                        Constitution and legislation. Addresses the legitimacy and impartiality of judges, juries,
-                        public defenders, district attorney and overall fairness and efficiency of the application of
-                        justice.</p>
+                    <p class="hiw-sph-p">The rules and practices responsible for delivering justice according to the Constitution and legislation. Addresses the legitimacy and impartiality of judges, juries, public defenders, district attorney and overall fairness and efficiency of the application of justice.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/politicalParties.jpg') }}"
-                        alt="Political Parties" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
-                            <path d="M8.5 8.5v.01" />
-                            <path d="M16 15.5v.01" />
-                            <path d="M12 12v.01" />
-                            <path d="M11 17v.01" />
-                            <path d="M7 14v.01" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Political Parties</h3>
-                    <p class="hiw-sph-p">A group of persons organised to promote and support certain principles and
-                        candidates for public office. Addresses financing of campaigns, influence of parties over the
-                        political system, and commitment to fair competition.</p>
+                    <p class="hiw-sph-p">A group of persons organised to promote and support certain principles and candidates for public office. Addresses financing of campaigns, influence of parties over the political system, and commitment to fair competition.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/civilSocity.jpg') }}"
-                        alt="Civil Society" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Civil Society</h3>
-                    <p class="hiw-sph-p">Non-governmental organisations and associations manifesting citizens'
-                        interests. Measures the effectiveness of the citizenry in mobilizing and communicating its
-                        demands to the government between elections.</p>
+                    <p class="hiw-sph-p">Non-governmental organisations and associations manifesting citizens' interests. Measures the effectiveness of the citizenry in mobilizing and communicating its demands to the government between elections.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/economy.jpg') }}"
-                        alt="Economy" class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <line x1="12" y1="1" x2="12" y2="23" />
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Economy</h3>
-                    <p class="hiw-sph-p">The rules and practices relating to the system of production and distribution
-                        of goods and services in the country.</p>
+                    <p class="hiw-sph-p">The rules and practices relating to the system of production and distribution of goods and services in the country.</p>
                 </div>
             </div>
 
             <div class="hiw-sph-card">
-                <div class="hiw-sph-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/how-it-work/sphersImage/media.jpg') }}" alt="Media"
-                        class="hiw-sph-img">
-                    <div class="hiw-sph-img-grad"></div>
-                    <div class="hiw-sph-ico">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 11a9 9 0 0 1 9 9" />
-                            <path d="M4 4a16 16 0 0 1 16 16" />
-                            <circle cx="5" cy="19" r="1" />
-                        </svg>
-                    </div>
-                </div>
+                <div class="hiw-sph-accent"></div>
                 <div class="hiw-sph-body">
                     <h3 class="hiw-sph-h3">Media</h3>
-                    <p class="hiw-sph-p">Outlets (newspapers, TV, etc.) on which the citizenry depends for accurate
-                        information. Addresses reliability, comprehensiveness, and independence.</p>
+                    <p class="hiw-sph-p">Outlets (newspapers, TV, etc.) on which the citizenry depends for accurate information. Addresses reliability, comprehensiveness, and independence.</p>
                 </div>
             </div>
 

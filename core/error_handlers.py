@@ -14,6 +14,18 @@ def register_error_handlers(app):
         else:
             return render_template('public/500.html', error=error.exception_error_message_string), error.http_response_status_code_integer
 
+    @app.errorhandler(400)
+    def bad_request(e):
+        if request.is_json or request.path.startswith('/api/') or request.path.startswith('/ai/'):
+            return jsonify({'success': False, 'error': str(e.description) if hasattr(e, 'description') else 'Bad request'}), 400
+        return render_template('public/400.html'), 400
+
+    @app.errorhandler(403)
+    def forbidden(e):
+        if request.is_json or request.path.startswith('/api/') or request.path.startswith('/ai/'):
+            return jsonify({'success': False, 'error': 'Forbidden'}), 403
+        return render_template('public/403.html'), 403
+
     @app.errorhandler(404)
     def page_not_found(e):
         if request.is_json or request.path.startswith('/api/'):

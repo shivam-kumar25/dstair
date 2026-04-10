@@ -102,15 +102,23 @@
     {% set tier = 'strong' if sphere_agg >= 0.7 else ('moderate' if sphere_agg >= 0.4 else 'weak') %}
     {% if sphere.questions %}
     <div class="av-sphere-block">
-        <div class="av-sphere-header">
+        <div class="av-sphere-header av-sphere-header--collapsible" data-av-toggle>
             <div class="av-sphere-header-left">
                 <span class="av-sphere-name">{{ sphere.label }}</span>
                 <span class="av-sphere-q-count">{{ sphere.questions | length }} questions</span>
             </div>
-            {% if aggregates.get(sphere.name) is not none %}
-            <span class="av-sphere-agg-pill av-sphere-agg-pill--{{ tier }}">{{ "%.2f"|format(sphere_agg) }}</span>
-            {% endif %}
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+                {% if aggregates.get(sphere.name) is not none %}
+                <span class="av-sphere-agg-pill av-sphere-agg-pill--{{ tier }}">{{ "%.2f"|format(sphere_agg) }}</span>
+                {% endif %}
+                <button class="av-collapse-btn" data-av-chevron aria-label="Toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            </div>
         </div>
+        <div class="av-sphere-questions-body" data-av-body>
         {% for question in sphere.questions %}
         {% set qid       = question.id | string %}
         {% set raw_score = scores.get(qid) %}
@@ -140,9 +148,68 @@
             </div>
         </div>
         {% endfor %}
+        </div>
     </div>
     {% endif %}
     {% endfor %}
+
+<style>
+.av-sphere-header--collapsible {
+    cursor: pointer;
+    user-select: none;
+}
+.av-collapse-btn {
+    background: rgba(0,0,0,0.06);
+    border: none;
+    border-radius: 0.5rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: background 0.15s, transform 0.3s;
+    flex-shrink: 0;
+}
+.av-collapse-btn:hover { background: rgba(0,0,0,0.12); }
+.av-collapse-btn.av-collapsed { transform: rotate(-90deg); }
+.av-sphere-questions-body {
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+.av-sphere-questions-body.av-collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+}
+</style>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-av-toggle]').forEach(function (header) {
+        var body   = header.nextElementSibling;
+        var chevron = header.querySelector('[data-av-chevron]');
+
+        // Set initial max-height so transition works
+        body.style.maxHeight = body.scrollHeight + 'px';
+
+        header.addEventListener('click', function () {
+            var collapsed = body.classList.contains('av-collapsed');
+            if (collapsed) {
+                body.classList.remove('av-collapsed');
+                body.style.maxHeight = body.scrollHeight + 'px';
+                chevron.classList.remove('av-collapsed');
+            } else {
+                body.style.maxHeight = body.scrollHeight + 'px';
+                // Force reflow before collapsing
+                body.offsetHeight;
+                body.classList.add('av-collapsed');
+                chevron.classList.add('av-collapsed');
+            }
+        });
+    });
+})();
+</script>
 
 
     {% else %}

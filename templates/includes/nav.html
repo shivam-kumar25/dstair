@@ -27,7 +27,7 @@
     height: 100dvh !important;
     z-index: 40 !important; /* Below the header, so it slides under smoothly */
     background: linear-gradient(160deg, #042f2e 0%, #064e3b 55%, #022c22 100%) !important;
-    display: flex; /* NO !important, otherwise Alpine's x-show display:none gets overridden! */
+    display: flex; /* Applied by Alpine when showing — Alpine removes the inline display:none on open */
     flex-direction: column !important;
     overflow-y: auto !important;
 }
@@ -125,9 +125,9 @@
     <!-- ── AUTH ACTIONS & PROFILE DROPDOWN (RIGHT) ─────────────────────────── -->
     <div class="hidden lg:flex justify-end items-center gap-4">
         {% if current_user.is_authenticated %}
-        <!-- Alpine State bounds specific back to the user menu -->
-        <div x-data="{ userMenuOpen: false }" class="relative">
-            <button @click="userMenuOpen = !userMenuOpen" @click.away="userMenuOpen = false"
+        <!-- Profile dropdown — pure JS, no Alpine dependency -->
+        <div class="relative" id="dstair-profile-menu">
+            <button onclick="dstairToggleMenu()" id="dstair-profile-btn"
                 class="nav-profile-btn flex items-center gap-3 px-3 py-1.5 rounded-full border transition-all duration-300 shadow-sm outline-none">
                 {% if current_user.file_path_string_for_user_profile_avatar_image %}
                 <img src="{{ url_for('static', filename='uploads/profiles/' ~ current_user.file_path_string_for_user_profile_avatar_image) }}"
@@ -140,22 +140,17 @@
                 </div>
                 {% endif %}
                 <span class="font-semibold text-sm mr-1 nav-profile-text">{{ current_user.user_account_unique_username_string }}</span>
-
-                <!-- Caret that rotates when menu is open via Alpine -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" :class="{'rotate-180': userMenuOpen}"
+                <svg id="dstair-profile-caret" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2"
                     class="transition-transform duration-200 text-white/80">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </button>
 
             <!-- Expanded Dropdown Menu -->
-            <div x-show="userMenuOpen" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-2"
-                class="absolute right-0 mt-3 w-56 glass-panel rounded-2xl shadow-float border border-anchor/10 py-2 overflow-hidden z-50 transform origin-top-right" style="opacity: 1; background: #b5a9a9 !important; backdrop-filter: blur(12px);"
-                x-cloak>
+            <div id="dstair-profile-dropdown"
+                class="absolute right-0 mt-3 w-56  rounded-2xl shadow-float border border-anchor/10 py-2 overflow-hidden z-50"
+                style="display:none; background: rgba(199, 198, 196, 0.97); backdrop-filter: blur(1px);">
 
                 <div class="px-5 py-3 border-b border-anchor/5 mb-2">
                     <div class="flex items-center gap-3">
@@ -225,7 +220,7 @@
     x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0"
-    x-transition:leave-end="opacity-0 -translate-y-4" x-cloak>
+    x-transition:leave-end="opacity-0 -translate-y-4" style="display:none;">
 
     <!-- Scrollable inner content -->
     <div class="mobile-menu-inner">
@@ -350,3 +345,33 @@
         </div>
     </div>
 </div> <!-- End Alpine Wrapper -->
+
+<script>
+(function () {
+    var _open = false;
+
+    function dstairToggleMenu() {
+        _open = !_open;
+        var d = document.getElementById('dstair-profile-dropdown');
+        var c = document.getElementById('dstair-profile-caret');
+        if (d) d.style.display = _open ? 'block' : 'none';
+        if (c) c.style.transform = _open ? 'rotate(180deg)' : '';
+    }
+
+    // Expose so the onclick attribute can reach it
+    window.dstairToggleMenu = dstairToggleMenu;
+
+    // Close when clicking outside the menu
+    document.addEventListener('click', function (e) {
+        if (!_open) return;
+        var container = document.getElementById('dstair-profile-menu');
+        if (container && !container.contains(e.target)) {
+            _open = false;
+            var d = document.getElementById('dstair-profile-dropdown');
+            var c = document.getElementById('dstair-profile-caret');
+            if (d) d.style.display = 'none';
+            if (c) c.style.transform = '';
+        }
+    });
+})();
+</script>

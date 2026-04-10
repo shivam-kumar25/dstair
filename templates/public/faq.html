@@ -27,14 +27,13 @@
    -------------------------------------------------------------------------- */
     .faq-hero {
         position: relative;
-        padding: 12rem 0 8rem;
-        background: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.5)),
-            url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=2000&auto=format&fit=crop');
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
+        padding: 10rem 0 7rem;
+        background: #020617;
+        background-image:
+            radial-gradient(ellipse 70% 60% at 80% 20%, rgba(217, 119, 6, 0.12) 0%, transparent 60%),
+            radial-gradient(ellipse 50% 40% at 15% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 55%);
         text-align: center;
-        border-bottom: 1px solid var(--faq-border);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .faq-hero-pre {
@@ -43,7 +42,7 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 0.3em;
-        color: var(--faq-indigo);
+        color: #f59e0b;
         margin-bottom: 1.5rem;
         display: block;
     }
@@ -80,16 +79,16 @@
     }
 
     .faq-sec-header {
-        margin-bottom: 3rem;
-        border-bottom: 1px solid var(--faq-border);
-        padding-bottom: 1.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 1.25rem;
     }
 
     .faq-sec-title {
         font-family: 'Outfit', sans-serif;
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 700;
-        color: #62ff00;
+        color: #f8fafc;
         letter-spacing: -0.02em;
     }
 
@@ -104,11 +103,21 @@
     }
 
     .faq-item {
-        background: #585858;
-        border: 1px solid var(--faq-border);
-        border-radius: 1.66rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
         overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        border-color: rgba(217, 119, 6, 0.25);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .faq-item-open {
+        border-color: rgba(217, 119, 6, 0.3);
+        background: rgba(217, 119, 6, 0.04);
     }
 
    
@@ -158,9 +167,9 @@
    GLOSSARY SECTION
    -------------------------------------------------------------------------- */
     .faq-glossary {
-        padding: 2rem 0;
-        background: #0f172a;
-        border-top: 1px solid var(--faq-border);
+        padding: 4rem 0;
+        background: #040c1a;
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
     }
 
     .faq-glo-grid {
@@ -170,25 +179,25 @@
     }
 
     .faq-glo-card {
-        padding: 1rem;
-        background: #060b18;
-        border: 1px solid var(--faq-border);
-        border-radius: 1.5rem;
-        transition: all 0.4s ease;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
+        transition: all 0.3s ease;
     }
 
     .faq-glo-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--faq-indigo);
-        background: rgba(99, 102, 241, 0.03);
+        transform: translateY(-4px);
+        border-color: rgba(217, 119, 6, 0.25);
+        background: rgba(217, 119, 6, 0.04);
     }
 
     .faq-glo-term {
         font-family: 'Outfit', sans-serif;
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         font-weight: 700;
-        color: orange;
-        margin-bottom: 1rem;
+        color: #fbbf24;
+        margin-bottom: 0.75rem;
         display: block;
     }
 
@@ -233,7 +242,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="faq-wrapper" x-data="{ activeItem: null }">
+<div class="faq-wrapper">
 
     <!-- Hero Section -->
     <section class="faq-hero">
@@ -253,14 +262,14 @@
         </div>
         <div class="faq-group">
             <!-- Q1 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 1 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 1 ? null : 1">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">What does DSTAIR actually mean?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 1" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Literally, DSTAIR stands for "a decision support tool to analyze institutional reform". The name of
                     the tool refers to its intended use as a guide for reformers who wish to strengthen the institutions
                     of governance and society in their country, knowing that some institutions lack the legitimacy
@@ -270,37 +279,33 @@
             </div>
 
             <!-- Q2 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 2 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 2 ? null : 2">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">Can I use DSTAIR?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 2" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Access to DSTAIR requires a Username and password, You can submit a request form to us in order to request access
-                    to the system in the <a href="/contact" class="text-indigo-400 hover:text-indigo-300" style="text-decoration: underline;color: #e27217;">contact</a> page.
+                    to the system in the <a href="/contact" style="text-decoration: underline; color: #fbbf24;">contact</a> page.
                 </div>
             </div>
 
             <!-- Q3 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 3 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 3 ? null : 3">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">What should I do if I forget my username and password?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 3" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Simply email us at <a href="mailto:scrajan@smail.iitm.ac.in"
-                        class="text-indigo-400 hover:text-indigo-300">scrajan@smail.iitm.ac.in</a> for a reminder. We will try
+                        style="color: #fbbf24; text-decoration: underline;">scrajan@smail.iitm.ac.in</a> for a reminder. We will try
                     not to judge you.
                 </div>
             </div>
-
-            
-
-           
         </div>
 
         <!-- Category: Questionnaire -->
@@ -309,14 +314,14 @@
         </div>
         <div class="faq-group">
             <!-- Q6 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 6 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 6 ? null : 6">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">How do I get started?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 6" x-collapse>
+                <div class="faq-content" style="display:none;">
                     After entering your username and password, you will be logged into the system. Click "Instructions"
                     for detailed instructions on how to use the system. Note that you can begin the questionnaire at any
                     time by selecting it from the tool menu on the left of the screen.
@@ -324,14 +329,14 @@
             </div>
 
             <!-- Q7 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 7 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 7 ? null : 7">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">How do I change the title for my analysis and display the country?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 7" x-collapse>
+                <div class="faq-content" style="display:none;">
                     In the "Analysis Setup" page, you can change the title or country name on any analysis by clicking
                     the title, country name or edit buttons. While the questionnaire does not change when the user
                     changes the country of analysis, this information is still important in order for DSTAIR to compare
@@ -340,14 +345,14 @@
             </div>
 
             <!-- Q8 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 8 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 8 ? null : 8">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">Can I analyze legitimacy across many countries?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 8" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Yes. You can add up to 9 new scenarios via the "Setup Analysis" page, selecting different countries
                     and titles for each. In the Results page, all of your analyses are depicted, such that you can view
                     the comparative legitimacy of certain spheres across each of these countries.
@@ -355,31 +360,31 @@
             </div>
 
             <!-- Q9 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 9 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 9 ? null : 9">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">What does the "Public" column indicate?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 9" x-collapse>
+                <div class="faq-content" style="display:none;">
                     When an "N" is displayed, this indicates that you have not permitted the results of your analyses to
                     be viewed by other users. A "Y" indicates that other users can access the results of your analyses
                     for use in their reports. If you would like to change your privacy preference, please email us at <a
                         href="mailto:crajan@tellus.org"
-                        class="text-indigo-400 hover:text-indigo-300">crajan@tellus.org</a>.
+                        style="color: #fbbf24; text-decoration: underline;">crajan@tellus.org</a>.
                 </div>
             </div>
 
             <!-- Q10 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 10 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 10 ? null : 10">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">How can I select another analysis?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 10" x-collapse>
+                <div class="faq-content" style="display:none;">
                     A banner at the top of the questionnaire screen indicates which analysis you are currently updating.
                     To update another analysis, select it from the drop-down menu in the "Questionnaire" box of the tool
                     menu and click "Go" to execute the switch.
@@ -387,14 +392,14 @@
             </div>
 
             <!-- Q11 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 11 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 11 ? null : 11">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">How are my answers saved?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 11" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Answers are saved on a rolling basis, such that each time you change screens, all of your answers to
                     that point will be changed. Clicking the "Save Changes" button at the top of the questionnaire page
                     will also save answers; however, this is merely to reassure users and is not actually necessary to
@@ -403,14 +408,14 @@
             </div>
 
             <!-- Q12 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 12 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 12 ? null : 12">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">How does the rating system work?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 12" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Users assign ratings to questions on a 1-7 scale. A "1" rating is the minimum, while a "7" is a
                     maximum. "N/A" denotes that the user has chosen not to answer this question for some reason; this
                     question will not be considered when assessing the legitimacy of the sphere. Note that most users
@@ -422,14 +427,14 @@
             </div>
 
             <!-- Q13 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 13 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 13 ? null : 13">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">Does the order of addressing spheres matter?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 13" x-collapse>
+                <div class="faq-content" style="display:none;">
                     No. DSTAIR was designed so that the user could tackle the questionnaire in any sequence, completing
                     it at their own pace. Also, if the situation on the ground in a country changes, the user is free to
                     return to the analysis and adjust their ratings accordingly.
@@ -437,17 +442,17 @@
             </div>
 
             <!-- Q14 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 14 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 14 ? null : 14">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">What do all of these icons mean?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 14" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Point to an icon with the cursor and leave it steady. A bubble will appear which explains what the
                     icon denotes. The icons provide critical metadata:
-                    <ul class="mt-4 space-y-3 border-l-2 border-indigo-500/30 pl-4">
+                    <ul style="margin-top:1rem; padding-left:1.25rem; border-left:2px solid rgba(217,119,6,0.3); list-style:none; display:flex; flex-direction:column; gap:0.75rem;">
                         <li><strong>Type:</strong> Informs whether a question pertains to meta-rules, rules, or
                             exogenous factors.</li>
                         <li><strong>Importance:</strong> Low, medium, or high importance assigned by developers.</li>
@@ -466,14 +471,14 @@
         </div>
         <div class="faq-group">
             <!-- Q15 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 15 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 15 ? null : 15">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">What do these results mean?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 15" x-collapse>
+                <div class="faq-content" style="display:none;">
                     The "Summary of Legitimacy Scores" presents ratings on a normalized 0-1 scale. The "Comparison of
                     Legitimacy Scores with All Analyses" provides a summary for each analysis in your portfolio,
                     allowing you to compare spheres across multiple countries.
@@ -481,14 +486,14 @@
             </div>
 
             <!-- Q16 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 16 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 16 ? null : 16">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">All tools have been triggered, what gives?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 16" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Either you have not answered any questions, or your answers have resulted in high legitimacy scores.
                     Since N/A counts as meeting the minimum threshold, a blank questionnaire will trigger all tools.
                     High scores also trigger tools as they suggest all DSTAIR specialized policies may be useful for
@@ -503,14 +508,14 @@
         </div>
         <div class="faq-group">
             <!-- Q17 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 17 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 17 ? null : 17">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">Does DSTAIR calculate cross-sphere legitimacy effects?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 17" x-collapse>
+                <div class="faq-content" style="display:none;">
                     At one time, DSTAIR allowed users to select an "attenuation factor". For simplicity, this advanced
                     feature has been removed from the current version but may be reintroduced later for advanced
                     analysts.
@@ -518,14 +523,14 @@
             </div>
 
             <!-- Q18 -->
-            <div class="faq-item" :class="{ 'faq-item-open': activeItem === 18 }">
-                <button class="faq-trigger" @click="activeItem = activeItem === 18 ? null : 18">
+            <div class="faq-item">
+                <button class="faq-trigger" data-faq-trigger>
                     <h3 class="faq-trigger-h3">Can I change the importance assigned to a question?</h3>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <div class="faq-content" x-show="activeItem === 18" x-collapse>
+                <div class="faq-content" style="display:none;">
                     Not at this time. This feature was removed for the sake of simplicity in the current version, though
                     it remains a planned future enhancement.
                 </div>
@@ -539,7 +544,7 @@
         <div class="faq-container">
             <div class="faq-sec-header faq-text-center">
                 <span class="faq-hero-pre">Terminology</span>
-                <h2 class="faq-sec-title faq-title-force-lg"> <span class="faq-bg-black-pill">Anti-Corruption Glossary</span></h2>
+                <h2 class="faq-sec-title faq-title-force-lg">Anti-Corruption Glossary</h2>
             </div>
 
             <div class="faq-glo-grid">
@@ -585,6 +590,34 @@
         </div>
     </section>
 
-
 </div>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-faq-trigger]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var item = btn.closest('.faq-item');
+            var content = item.querySelector('.faq-content');
+            var isOpen = item.classList.contains('faq-item-open');
+
+            // Close all other items
+            document.querySelectorAll('.faq-item').forEach(function (other) {
+                if (other !== item) {
+                    other.classList.remove('faq-item-open');
+                    other.querySelector('.faq-content').style.display = 'none';
+                }
+            });
+
+            // Toggle this item
+            if (isOpen) {
+                item.classList.remove('faq-item-open');
+                content.style.display = 'none';
+            } else {
+                item.classList.add('faq-item-open');
+                content.style.display = 'block';
+            }
+        });
+    });
+})();
+</script>
 {% endblock %}

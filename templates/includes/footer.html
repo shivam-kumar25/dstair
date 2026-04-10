@@ -1,172 +1,47 @@
-<style>
-    /* Footer grid — inline to guarantee fresh load, never cached */
-    .footer-columns {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-
-    @media (min-width: 640px) {
-        .footer-columns {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2.5rem;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .footer-columns {
-            grid-template-columns: 2fr 1fr 1.5fr;
-            gap: 4rem;
-            align-items: start;
-        }
-    }
-
-    /* ── Mobile-only overrides (max-width: 639px) ── */
-    /* Desktop layout (1024px+) is NOT touched here   */
-    @media (max-width: 639px) {
-        /* Scale down the oversized brand text */
-        .footer-brand-text {
-            font-size: 2rem !important;
-        }
-        /* Scale down the oversized logo box */
-        .footer-logo-box {
-            width: 3rem !important;
-            height: 3rem !important;
-            padding: 0.4rem !important;
-        }
-        /* Tighten the outer container padding on mobile */
-        .footer-inner {
-            padding: 2.5rem 1.25rem !important;
-        }
-        /* Ensure brand column doesn't stretch awkwardly */
-        .footer-brand-row {
-            align-items: center !important;
-            gap: 0.75rem !important;
-        }
-    }
-</style>
-
 <footer id="dstair-footer" class="mt-auto border-t relative z-20 overflow-hidden">
-    <!-- Background glow -->
     <div class="absolute inset-0 opacity-10 mix-blend-overlay pointer-events-none bg-pattern-dots-xl"></div>
     <div class="footer-brand-glow absolute top-0 right-0 pointer-events-none opacity-30"
-        style="width:500px; height:500px; border-radius:50%; filter:blur(100px); right:-10rem; top:-10rem;"></div>
+        style="width:600px; height:600px; border-radius:50%; filter:blur(120px); right:-12rem; top:-14rem;"></div>
 
-    <div class="footer-inner" style="max-width:80rem; margin:0 auto; padding:3.5rem 1.5rem; position:relative; z-index:10;">
+    <div style="max-width:72rem; margin:0 auto; padding:3rem 3rem 2rem; position:relative; z-index:10;">
 
-        <!-- Top row: Responsive 3-column grid -->
-        <div class="footer-columns">
+        <!-- Main content row -->
+        <div style="display:flex; align-items:center; gap:3rem; flex-wrap:wrap;">
 
-            <!-- Col 1: Brand -->
-            <div style="display:flex; flex-direction:column; align-items:flex-start;">
-                <div class="footer-brand-row" style="display:flex; align-items:center; gap:1rem; margin-bottom:1.25rem;">
-                    <div class="footer-logo-box"
-                        style="width:5.44rem; height:5.44rem; background:rgba(255,255,255,0.1); border-radius:0.75rem; border:1px solid rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; padding:0.35rem; box-shadow:0 4px 20px rgba(0,0,0,0.2);">
-                        <img src="{{ url_for('static', filename='assets/general/logo.png') }}" alt="DSTAIR"
-                            style="height:100%; width:auto; object-fit:contain; opacity:0.9;">
-                    </div>
-                    <span class="footer-brand-text"
-                        style="font-family:Outfit, sans-serif; font-size:4.22rem; font-weight:900; letter-spacing:-0.025em; color:#ffffff;">DSTAIR</span>
+            <!-- Logo + wordmark block -->
+            <div style="display:flex; align-items:center; gap:1.25rem; flex-shrink:0;">
+                <div style="width:4rem; height:4rem; background:rgba(255,255,255,0.08); border-radius:0.875rem; border:1px solid rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; padding:0.4rem; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                    <img src="{{ url_for('static', filename='assets/general/logo.png') }}" alt="DSTAIR"
+                        style="height:100%; width:auto; object-fit:contain; opacity:0.9;">
                 </div>
-                <p
-                    style="color:rgba(255,255,255,0.55); font-size:0.9rem; line-height:1.75; max-width:22rem; margin-bottom:1.5rem;">
-                    The global standard for institutional reform analysis. Quantifying the legitimacy of governance
-                    using advanced social metrics.
-                </p>
-                <div
-                    style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.375rem 0.875rem; border-radius:9999px; border:1px solid rgba(52,211,153,0.25); background:rgba(52,211,153,0.06);">
-                    <span
-                        style="width:6px; height:6px; border-radius:50%; background:#34d399; display:inline-block; animation:pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;"></span>
-                    <span
-                        style="color:rgba(52,211,153,0.85); font-size:0.7rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; font-family:Inter, sans-serif;">Active
-                        Platform</span>
-                </div>
+                <span style="font-family:Outfit, sans-serif; font-size:2.25rem; font-weight:900; letter-spacing:-0.03em; color:#ffffff; line-height:1;">DSTAIR</span>
             </div>
 
-            <!-- Col 2: Navigation -->
-            <div style="display:flex; flex-direction:column;">
-                <h4
-                    style="color:rgb(183, 255, 2); font-size:1rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:1.25rem; font-family:Inter, sans-serif;">
-                    Navigation</h4>
-                <nav style="display:flex; flex-direction:column; gap:0.75rem;">
-                    <a href="{{ url_for('public.home') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span>Home
-                    </a>
-                    <a href="{{ url_for('public.about') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none; color : rgb(128, 0, 0)">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span><span
-                            style="color : rgb(255, 255, 255)">About</span>
-                    </a>
-                    <a href="{{ url_for('public.how_it_works') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span>Methodology
-                    </a>
-                    <a href="{{ url_for('public.resources') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span>Resources
-                    </a>
-                    <a href="{{ url_for('public.faq') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span>FAQ
-                    </a>
-                    <a href="{{ url_for('public.contact') }}" class="footer-nav-link"
-                        style="font-size:0.875rem; font-weight:500; display:flex; align-items:center; gap:0.5rem; text-decoration:none;">
-                        <span
-                            style="width:12px; height:1px; background:rgba(255,255,255,0.2); display:inline-block; flex-shrink:0;"></span>Contact
-                    </a>
-                </nav>
-            </div>
+            <!-- Vertical divider -->
+            <div style="width:1px; height:3.5rem; background:rgba(255,255,255,0.1); flex-shrink:0; display:none;" class="footer-divider"></div>
 
-            <!-- Col 3: Access / CTA -->
-            <div style="display:flex; flex-direction:column;">
-                <h4
-                    style="color:rgb(183, 255, 2); font-size:1rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:1.25rem; font-family:Inter, sans-serif;">
-                    Platform Access</h4>
-                <p style="color:rgb(233, 233, 233); font-size:0.875rem; line-height:1.75; margin-bottom:1.5rem;">
-                    DSTAIR is available to researchers, policy analysts, and institutional reform practitioners.
+            <!-- Tagline + badge -->
+            <div style="display:flex; flex-direction:column; gap:0.875rem;">
+                <p style="color:rgba(255,255,255,0.45); font-size:0.875rem; line-height:1.7; margin:0; max-width:26rem;">
+                    The global standard for institutional reform analysis — quantifying the legitimacy of governance using advanced social metrics.
                 </p>
-                {% if not current_user.is_authenticated %}
-                <a href="{{ url_for('auth.login') }}"
-                    style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.625rem 1.25rem; background:#059669; color:rgb(128, 0, 0); font-size:0.875rem; font-weight:600; border-radius:0.75rem; text-decoration:none; box-shadow:0 4px 15px rgba(5,150,105,0.35); align-self:flex-start; transition: background 0.2s;">
-                    Sign In
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.5">
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                    </svg>
-                </a>
-                <a href="{{ url_for('public.contact') }}"
-                    style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.625rem 1.25rem; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.7); font-size:0.875rem; font-weight:500; border-radius:0.75rem; text-decoration:none; margin-top:0.75rem; align-self:flex-start;">
-                    Request Access
-                </a>
-                {% else %}
-                <a href="{{ url_for('dashboard.index', username=current_user.user_account_unique_username_string) }}"
-                    style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.625rem 1.25rem; background:#059669; color:#fff; font-size:0.875rem; font-weight:600; border-radius:0.75rem; text-decoration:none; box-shadow:0 4px 15px rgba(5,150,105,0.35); align-self:flex-start; transition: background 0.2s;">
-                    Go to Dashboard
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2.5">
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                    </svg>
-                </a>
-                {% endif %}
+                
             </div>
 
         </div>
 
-        <!-- Divider + bottom bar -->
-        <div
-            style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:center;">
-            <p style="font-size:0.75rem; color:rgba(255,255,255,0.3); font-weight:300;">
-                &copy; {{ current_year | default('2026') }} DSTAIR. All rights reserved.
+        <!-- Bottom copyright bar -->
+        <div style="margin-top:2rem; padding-top:1.25rem; border-top:1px solid rgba(255,255,255,0.07); text-align:center;">
+            <p style="font-size:0.72rem; color:rgba(255,255,255,0.22); font-weight:300; margin:0; letter-spacing:0.04em;">
+                &copy; {{ current_year | default('2026') }} DSTAIR &nbsp;&middot;&nbsp; All rights reserved.
             </p>
         </div>
 
     </div>
+
+    <style>
+        @media (min-width: 640px) {
+            .footer-divider { display: block !important; }
+        }
+    </style>
 </footer>

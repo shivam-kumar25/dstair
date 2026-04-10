@@ -43,6 +43,21 @@ def create_app(config_class=None):
     # ── Flask Extensions Initialization ───────────────────────────
     # We initialize extensions here to bind them to this specific app instance
     db.init_app(app)  # SQLAlchemy ORM
+
+    # ── SQLite Concurrency Fix ────────────────────────────────────
+    # WAL mode allows concurrent reads during background writes (AI evaluation).
+    # busy_timeout prevents "database is locked" errors by retrying for up to 20s.
+    import sqlalchemy as _sa
+
+    with app.app_context():
+        @_sa.event.listens_for(db.engine, "connect")
+        def _set_sqlite_pragmas(dbapi_conn, _):
+            if "sqlite" in str(db.engine.url):
+                cur = dbapi_conn.cursor()
+                cur.execute("PRAGMA journal_mode=WAL")
+                cur.execute("PRAGMA busy_timeout=20000")
+                cur.close()
+
     migrate.init_app(
         app, db, render_as_batch=True
     )  # Alembic migrations (render_as_batch helps with SQLite table alters)
@@ -102,6 +117,19 @@ def create_app(config_class=None):
         response.headers["X-XSS-Protection"] = "1; mode=block"
         response.headers["Permissions-Policy"] = (
             "geolocation=(), microphone=(), camera=()"
+        )
+        # Content-Security-Policy — restricts script/style/image sources to
+        # same-origin plus the CDNs actually used by the app (flagcdn, fonts).
+        # Inline styles are allowed for legacy template compatibility; tighten
+        # further once templates are audited for nonce support.
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; "
+            "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
+            "img-src 'self' data: https://flagcdn.com https://images.pexels.com; "
+            "connect-src 'self'; "
+            "frame-ancestors 'none';"
         )
         if not app.debug:
             response.headers["Strict-Transport-Security"] = (

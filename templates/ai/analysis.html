@@ -4,10 +4,106 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ai-user.css') }}">
+<style>
+/* ── Live Status Panel ───────────────────────────────────────── */
+.sp {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0,0,0,.06);
+    display: none;
+}
+.sp.sp-visible { display: block; }
+.sp-bar-track {
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    margin: .875rem 0;
+}
+.sp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg,#3b82f6,#6366f1);
+    border-radius: 999px;
+    transition: width .5s ease;
+    width: 0%;
+}
+.sp-row {
+    display: flex;
+    align-items: center;
+    gap: .625rem;
+    font-size: .875rem;
+    color: #334155;
+    margin-bottom: .5rem;
+    font-weight: 500;
+}
+.sp-label {
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #94a3b8;
+    min-width: 6rem;
+}
+.sp-log {
+    border-top: 1px solid #f1f5f9;
+    margin-top: 1rem;
+    padding-top: .875rem;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    max-height: 220px;
+    overflow-y: auto;
+}
+.sp-log-row {
+    display: flex;
+    gap: .625rem;
+    font-size: .8125rem;
+    align-items: flex-start;
+}
+.sp-log-time { color: #94a3b8; flex-shrink: 0; min-width: 5rem; font-variant-numeric: tabular-nums; }
+.sp-log-msg  { color: #334155; }
+.sp-log-row.is-err  .sp-log-msg { color: #dc2626; }
+.sp-log-row.is-warn .sp-log-msg { color: #d97706; }
+.sp-log-row.is-ok   .sp-log-msg { color: #16a34a; }
+.sp-done {
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.sp-done-text { flex: 1; }
+.sp-done-title { font-weight: 700; font-size: 1rem; color: #16a34a; }
+.sp-done-sub   { font-size: .8125rem; color: #64748b; margin-top: .125rem; }
+.sp-done-btn {
+    display: inline-flex; align-items: center; gap: .375rem;
+    background: #16a34a; color: #fff; font-weight: 600; font-size: .875rem;
+    padding: .625rem 1.25rem; border-radius: .625rem; text-decoration: none;
+    white-space: nowrap; transition: background .2s;
+}
+.sp-done-btn:hover { background: #15803d; }
+.sp-err-title { font-weight: 700; font-size: .9375rem; color: #dc2626; margin-bottom: .375rem; }
+.sp-err-msg   { font-size: .8375rem; color: #475569; word-break: break-word; white-space: pre-wrap; }
+@keyframes sp-spin { to { transform: rotate(360deg); } }
+.sp-spin { animation: sp-spin .9s linear infinite; }
+@keyframes sp-pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+.sp-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #22c55e; animation: sp-pulse 1.4s ease-in-out infinite;
+    flex-shrink: 0;
+}
+/* dropdown toggle */
+.ai-eva-dd { display: none; }
+.ai-eva-dd.dd-open { display: block; }
+/* key option check visibility */
+.ai-eva-keyopt-check { display: none; }
+.ai-eva-keyopt.is-selected .ai-eva-keyopt-check { display: flex; }
+</style>
 {% endblock %}
 
+{% set has_any_key = active_keys | length > 0 or has_system_key %}
+
 {% block content %}
-<section class="ai-eva-page" x-data="aiEvaluator()">
+<section class="ai-eva-page" id="ai-eva-section">
 
     <div class="ai-eva-bg">
         <div class="ai-eva-grid"></div>
@@ -28,19 +124,21 @@
             </p>
         </div>
 
-        <!-- No keys warning (blocks submission) -->
-        {% set has_any_key = active_keys | length > 0 or has_system_key %}
+        <!-- No keys warning -->
         {% if not has_any_key %}
         <div class="ai-eva-nokey-banner">
             <div class="ai-eva-nokey-ico">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
             </div>
             <div class="ai-eva-nokey-body">
                 <strong>No API Keys Configured</strong>
                 <p>You need at least one active API key to run an evaluation.
-                   <a href="{{ url_for('ai_dashboard.api_keys') }}" class="ai-eva-nokey-link">Set up API keys &rarr;</a>
+                    <a href="{{ url_for('ai_dashboard.api_keys') }}" class="ai-eva-nokey-link">Set up API keys &rarr;</a>
                 </p>
             </div>
         </div>
@@ -61,31 +159,10 @@
             <!-- Country Selection -->
             <div class="ai-eva-grp">
                 <label class="ai-eva-lbl">Target Country</label>
-                <div class="ai-eva-inp-wrap" x-data="{ searchQuery: '', showDropdown: false, filteredCountries: [] }"
-                    x-init="filteredCountries = countries">
-                    <input type="text" class="ai-eva-inp is-search" x-model="searchQuery" @focus="showDropdown = true"
-                        @input="filteredCountries = countries.filter(c => c.toLowerCase().includes(searchQuery.toLowerCase())); showDropdown = true"
-                        @click.away="showDropdown = false" :placeholder="country || 'Search for a country...'">
-
-                    <div x-show="country && !showDropdown"
-                        @click="showDropdown = true; searchQuery = ''; filteredCountries = countries"
-                        class="ai-eva-sel-badge">
-                        <span class="ai-eva-sel-txt" x-text="country"></span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" class="ai-eva-sel-ico">
-                            <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                    </div>
-
-                    <div x-show="showDropdown && filteredCountries.length > 0" x-transition class="ai-eva-dd">
-                        <template x-for="c in filteredCountries" :key="c">
-                            <button type="button" @click="country = c; searchQuery = c; showDropdown = false"
-                                class="ai-eva-dd-btn" :class="{ 'is-active': c === country }">
-                                <span x-text="c"></span>
-                                <span x-show="evaluatedCountries.includes(c)" class="ai-eva-dd-has-data">✓ data</span>
-                            </button>
-                        </template>
-                    </div>
+                <div class="ai-eva-inp-wrap" style="position:relative;">
+                    <input type="text" id="country-search" class="ai-eva-inp is-search"
+                           placeholder="Search for a country..." autocomplete="off">
+                    <div id="country-dropdown" class="ai-eva-dd"></div>
                 </div>
             </div>
 
@@ -97,43 +174,52 @@
                 </label>
 
                 {% if active_keys or has_system_key %}
-                <div class="ai-eva-keypicker">
+                <div class="ai-eva-keypicker" id="key-picker">
                     <!-- Auto option -->
-                    <label class="ai-eva-keyopt" :class="{ 'is-selected': selectedKeyId === '' }">
-                        <input type="radio" name="ai_key" value="" x-model="selectedKeyId" class="ai-eva-keyopt-radio">
+                    <label class="ai-eva-keyopt is-selected" data-key-label>
+                        <input type="radio" name="ai_key" value="" class="ai-eva-keyopt-radio" checked>
                         <div class="ai-eva-keyopt-body">
                             <div class="ai-eva-keyopt-name">Auto (best available)</div>
                             <div class="ai-eva-keyopt-sub">Tries your keys in priority order, falls back to system key if set</div>
                         </div>
-                        <div class="ai-eva-keyopt-check" x-show="selectedKeyId === ''">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        <div class="ai-eva-keyopt-check">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
                         </div>
                     </label>
 
                     {% for key in active_keys %}
-                    <label class="ai-eva-keyopt" :class="{ 'is-selected': selectedKeyId === '{{ key.id }}' }">
-                        <input type="radio" name="ai_key" value="{{ key.id }}" x-model="selectedKeyId" class="ai-eva-keyopt-radio">
+                    <label class="ai-eva-keyopt" data-key-label>
+                        <input type="radio" name="ai_key" value="{{ key.id }}" class="ai-eva-keyopt-radio">
                         <div class="ai-eva-keyopt-icon ai-eva-keyopt-icon--{{ key.provider }}">{{ key.label[0] | upper }}</div>
                         <div class="ai-eva-keyopt-body">
                             <div class="ai-eva-keyopt-name">{{ key.label }}</div>
                             <div class="ai-eva-keyopt-sub">{{ key.masked_key }}</div>
                         </div>
-                        <div class="ai-eva-keyopt-check" x-show="selectedKeyId === '{{ key.id }}'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        <div class="ai-eva-keyopt-check">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
                         </div>
                     </label>
                     {% endfor %}
 
                     {% if has_system_key %}
-                    <label class="ai-eva-keyopt" :class="{ 'is-selected': selectedKeyId === 'system' }">
-                        <input type="radio" name="ai_key" value="system" x-model="selectedKeyId" class="ai-eva-keyopt-radio">
+                    <label class="ai-eva-keyopt" data-key-label>
+                        <input type="radio" name="ai_key" value="system" class="ai-eva-keyopt-radio">
                         <div class="ai-eva-keyopt-icon ai-eva-keyopt-icon--groq">G</div>
                         <div class="ai-eva-keyopt-body">
                             <div class="ai-eva-keyopt-name">System Key (Groq)</div>
                             <div class="ai-eva-keyopt-sub">Shared environment key — fallback only</div>
                         </div>
-                        <div class="ai-eva-keyopt-check" x-show="selectedKeyId === 'system'">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        <div class="ai-eva-keyopt-check">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
                         </div>
                     </label>
                     {% endif %}
@@ -148,90 +234,91 @@
             <!-- Additional Instructions -->
             <div class="ai-eva-grp">
                 <label class="ai-eva-lbl">Additional Instructions <span class="ai-eva-lbl-opt">(Optional)</span></label>
-                <textarea class="ai-eva-tarea" x-model="additionalInstructions" rows="3"
+                <textarea id="additional-instructions" class="ai-eva-tarea" rows="3"
                     placeholder="e.g. Focus on recent 2024 reforms, compare with regional averages, emphasize judicial independence..."></textarea>
             </div>
 
             <!-- Submit Button -->
-            <button class="ai-eva-submit" @click="runEvaluation()"
-                    :disabled="loading || !hasKeys">
-                <template x-if="!loading">
-                    <span class="ai-eva-scontent">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        Execute Analysis
-                    </span>
-                </template>
-                <template x-if="loading">
-                    <span class="ai-eva-scontent">
-                        <svg class="ai-eva-sspin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-                            viewBox="0 0 24 24">
-                            <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path opacity="0.75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                            </path>
-                        </svg>
-                        Analyzing...
-                    </span>
-                </template>
+            <button class="ai-eva-submit" id="submit-btn" {% if not has_any_key %}disabled{% endif %}>
+                <span class="ai-eva-scontent" id="submit-idle">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
+                    Execute Analysis
+                </span>
+                <span class="ai-eva-scontent" id="submit-loading" style="display:none;">
+                    <svg class="ai-eva-sspin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+                        <circle opacity="0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path opacity="0.75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Analyzing...
+                </span>
             </button>
         </div>
 
-        <!-- Results Panel -->
-        <div class="ai-eva-res" :class="{'is-visible': resultVisible}">
-            <h3 class="ai-eva-rh3">Evaluation Complete</h3>
-            <div class="ai-eva-rstat">
-                <div class="ai-eva-rico">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                </div>
-                <span class="ai-eva-rtxt" x-text="resultMessage"></span>
-            </div>
-            <a :href="resultLink" class="ai-eva-rlink">
-                View Full Results
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" class="ai-eva-rgo">
-                    <path d="M5 12h14" />
-                    <path d="m12 5 7 7-7 7" />
+        <!-- ── Live Status Panel ── -->
+        <div class="sp" id="status-panel">
+
+            <!-- Header row: always visible while panel is open -->
+            <div id="sp-header-row" style="display:none;align-items:center;gap:.625rem;margin-bottom:.75rem;">
+                <svg id="sp-hdr-spin" class="sp-spin" xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" style="color:#3b82f6;flex-shrink:0;display:none">
+                    <circle style="opacity:.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path style="opacity:.8" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                 </svg>
-            </a>
-        </div>
-
-        <!-- Raw API Communication (shown after evaluation completes) -->
-        <div class="ai-eva-raw" x-show="rawVisible" x-transition>
-            <div class="ai-eva-raw-header">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                Raw API Communication
-                <span class="ai-eva-raw-badge" x-text="rawProvider + (rawModel ? ' / ' + rawModel : '')"></span>
+                <span id="sp-hdr-title" style="font-weight:700;color:#0f172a;flex:1">Evaluation Running</span>
+                <span style="font-weight:700;color:#3b82f6" id="sp-progress-txt">0%</span>
+                <button id="cancel-btn" onclick="cancelEvaluation()" style="margin-left:.5rem;padding:.3rem .8rem;font-size:.75rem;font-weight:700;background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;border-radius:.4rem;cursor:pointer;white-space:nowrap;display:none;">
+                    Cancel
+                </button>
             </div>
 
-            <div class="ai-eva-raw-endpoint" x-show="rawEndpoint">
-                <span class="ai-eva-raw-method">POST</span>
-                <span class="ai-eva-raw-url" x-text="rawEndpoint"></span>
+            <!-- RUNNING -->
+            <div id="sp-running" style="display:none;">
+                <div class="sp-bar-track"><div class="sp-bar-fill" id="sp-bar"></div></div>
+                <div class="sp-row" id="sp-stage-row" style="display:none;">
+                    <span class="sp-label">Status</span>
+                    <span id="sp-stage-txt"></span>
+                </div>
+                <div class="sp-row" id="sp-provider-row" style="display:none;">
+                    <span class="sp-label">Provider</span>
+                    <span class="sp-dot"></span>
+                    <span id="sp-provider-txt"></span>
+                    <span id="sp-model-txt" style="color:#94a3b8;display:none;"></span>
+                </div>
             </div>
 
-            <details class="ai-eva-raw-details">
-                <summary class="ai-eva-raw-summary">
-                    <span class="ai-eva-raw-slabel">Request Payload</span>
-                    <span class="ai-eva-raw-shint">sent to AI provider</span>
-                    <svg class="ai-eva-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <pre class="ai-eva-raw-pre ai-eva-raw-pre--req" x-text="rawRequest"></pre>
-            </details>
+            <!-- COMPLETE -->
+            <div id="sp-complete" style="display:none;" class="sp-done">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" style="flex-shrink:0">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <div class="sp-done-text">
+                    <div class="sp-done-title">Evaluation Complete</div>
+                    <div class="sp-done-sub" id="sp-done-sub">Completed</div>
+                </div>
+                <a href="#" class="sp-done-btn" id="sp-result-link">
+                    View Results
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+            </div>
 
-            <details class="ai-eva-raw-details">
-                <summary class="ai-eva-raw-summary">
-                    <span class="ai-eva-raw-slabel">Response Received</span>
-                    <span class="ai-eva-raw-shint">raw API response</span>
-                    <svg class="ai-eva-raw-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                </summary>
-                <pre class="ai-eva-raw-pre ai-eva-raw-pre--res" x-text="rawResponse"></pre>
-            </details>
+            <!-- ERROR -->
+            <div id="sp-error" style="display:none;gap:.875rem;align-items:flex-start">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" style="flex-shrink:0;margin-top:2px">
+                    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <div>
+                    <div class="sp-err-title">Evaluation Failed</div>
+                    <div class="sp-err-msg" id="sp-err-msg"></div>
+                </div>
+            </div>
+
+            <!-- LOG — always visible once started, survives phase changes -->
+            <div class="sp-log" id="sp-log" style="display:none;"></div>
+
         </div>
     </div>
 </section>
@@ -239,136 +326,358 @@
 
 {% block scripts %}
 <script>
-    function aiEvaluator() {
-        return {
-            country: '',
-            additionalInstructions: '',
-            selectedKeyId: '',
-            loading: false,
-            resultVisible: false,
-            resultMessage: '',
-            resultLink: '',
-            rawVisible: false,
-            rawProvider: '',
-            rawModel: '',
-            rawEndpoint: '',
-            rawRequest: '',
-            rawResponse: '',
-            hasKeys: {{ 'true' if (active_keys | length > 0 or has_system_key) else 'false' }},
-            countries: {{ all_countries | map(attribute='name') | list | tojson }},
-            evaluatedCountries: {{ evaluated_countries | list | tojson }},
+(function () {
 
-            async runEvaluation() {
-                if (!this.country.trim()) {
-                    if (typeof showToast === 'function') showToast('Please select a country.', 'error');
-                    else alert('Please select a country.');
-                    return;
-                }
-                if (!this.hasKeys) {
-                    if (typeof showToast === 'function') showToast('No API keys configured.', 'error');
-                    return;
-                }
+    /* ── Data ── */
+    var ALL_COUNTRIES        = {{ all_countries | map(attribute='name') | list | tojson }};
+    var EVALUATED_COUNTRIES  = {{ evaluated_countries | list | tojson }};
+    var HAS_KEYS             = {{ 'true' if has_any_key else 'false' }};
+    var EVALUATE_URL         = '{{ url_for("ai_dashboard.evaluate") }}';
 
-                this.loading = true;
-                this.resultVisible = false;
-                this.rawVisible = false;
-                this.resultMessage = 'Starting AI evaluation...';
+    var selectedCountry      = '';
+    var loading              = false;
+    var phase                = 'idle'; // idle | running | complete | error
+    var progress             = 0;
+    var prevStage            = '';
+    var resultLink           = '';
+    var currentAnalysisId    = null;
+    var seenAttemptLog       = [];
+    var pollingActive        = false;  // hard stop flag — prevents .catch restart after terminal states
+    var finalErrorLogged     = false;  // prevents duplicate "Failed:" entries
 
-                try {
-                    const body = {
-                        country: this.country.trim(),
-                        additional_instructions: this.additionalInstructions.trim(),
-                    };
-                    if (this.selectedKeyId !== '') {
-                        body.selected_key_id = this.selectedKeyId;
-                    }
+    /* ── Elements ── */
+    var searchInput   = document.getElementById('country-search');
+    var dropdown      = document.getElementById('country-dropdown');
+    var submitBtn     = document.getElementById('submit-btn');
+    var submitIdle    = document.getElementById('submit-idle');
+    var submitLoading = document.getElementById('submit-loading');
+    var instrTA       = document.getElementById('additional-instructions');
+    var statusPanel   = document.getElementById('status-panel');
+    var spHeaderRow   = document.getElementById('sp-header-row');
+    var spHdrSpin     = document.getElementById('sp-hdr-spin');
+    var spHdrTitle    = document.getElementById('sp-hdr-title');
+    var spCancelBtn   = document.getElementById('cancel-btn');
+    var spRunning     = document.getElementById('sp-running');
+    var spComplete    = document.getElementById('sp-complete');
+    var spError       = document.getElementById('sp-error');
+    var spBar         = document.getElementById('sp-bar');
+    var spProgressTxt = document.getElementById('sp-progress-txt');
+    var spStageTxt    = document.getElementById('sp-stage-txt');
+    var spStageRow    = document.getElementById('sp-stage-row');
+    var spProviderTxt = document.getElementById('sp-provider-txt');
+    var spProviderRow = document.getElementById('sp-provider-row');
+    var spModelTxt    = document.getElementById('sp-model-txt');
+    var spLog         = document.getElementById('sp-log');
+    var spDoneSub     = document.getElementById('sp-done-sub');
+    var spResultLink  = document.getElementById('sp-result-link');
+    var spErrMsg      = document.getElementById('sp-err-msg');
 
-                    const response = await fetch('{{ url_for("ai_dashboard.evaluate") }}', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
-                        body: JSON.stringify(body)
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        this.analysisId = data.analysis_id;
-                        this.resultLink = `/ai/analysis/${data.analysis_id}`;
-                        this.resultVisible = true;
-                        this.resultMessage = 'AI analysis started. Monitoring progress...';
-                        if (typeof showToast === 'function') showToast(data.message || 'Evaluation started.', 'success');
-                        await this.pollAnalysisStatus(data.analysis_id);
-                    } else {
-                        if (typeof showToast === 'function') showToast(data.error || 'Evaluation failed.', 'error');
-                        this.resultMessage = 'Evaluation failed to start.';
-                        this.resultVisible = true;
-                    }
-                } catch (error) {
-                    if (typeof showToast === 'function') showToast('Network error. Please try again.', 'error');
-                    this.resultMessage = 'Network error during request.';
-                    this.resultVisible = true;
-                } finally {
-                    this.loading = false;
-                }
-            },
-
-            async pollAnalysisStatus(analysisId) {
-                const intervalMs = 2000;
-                let attempts = 0;
-                const maxAttempts = 120;
-
-                while (attempts < maxAttempts) {
-                    attempts += 1;
-                    await new Promise(resolve => setTimeout(resolve, intervalMs));
-
-                    try {
-                        const statusResp = await fetch(`/ai/analysis/${analysisId}/status`, {
-                            method: 'GET',
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                        const statusData = await statusResp.json();
-
-                        if (!statusData) continue;
-
-                        if (statusData.status === 'error') {
-                            this.resultMessage = 'AI evaluation failed. Check logs in archive.';
-                            if (typeof showToast === 'function') showToast('AI evaluation failed.', 'error');
-                            return;
-                        }
-
-                        if (statusData.completed) {
-                            this.resultMessage = 'AI Evaluation complete. View your results below.';
-                            this.resultLink = `/ai/analysis/${analysisId}`;
-                            if (typeof showToast === 'function') showToast('AI evaluation completed successfully.', 'success');
-
-                            // Populate raw API viewer from metadata
-                            const meta = statusData.metadata || {};
-                            if (meta.sample_raw_request || meta.sample_raw_response) {
-                                this.rawProvider  = meta.provider_used || '';
-                                this.rawModel     = meta.model_used || '';
-                                this.rawEndpoint  = meta.sample_raw_endpoint || '';
-                                this.rawRequest   = meta.sample_raw_request
-                                    ? JSON.stringify(meta.sample_raw_request, null, 2)
-                                    : '';
-                                this.rawResponse  = meta.sample_raw_response
-                                    ? JSON.stringify(meta.sample_raw_response, null, 2)
-                                    : '';
-                                this.rawVisible = true;
-                            }
-                            return;
-                        }
-
-                        this.resultMessage = `Status: ${statusData.status || 'in_progress'} — ${statusData.metadata?.stage || ''}`;
-
-                    } catch (error) {
-                        console.warn('AI status polling error:', error);
-                    }
-                }
-
-                this.resultMessage = 'AI evaluation timed out waiting for completion.';
-                if (typeof showToast === 'function') showToast(this.resultMessage, 'error');
-            }
-        };
+    /* ── Country search dropdown ── */
+    function renderDropdown(query) {
+        var filtered = ALL_COUNTRIES.filter(function (c) {
+            return c.toLowerCase().includes(query.toLowerCase());
+        });
+        dropdown.innerHTML = '';
+        if (!filtered.length) { dropdown.classList.remove('dd-open'); return; }
+        filtered.forEach(function (c) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'ai-eva-dd-btn' + (c === selectedCountry ? ' is-active' : '');
+            btn.innerHTML = c + (EVALUATED_COUNTRIES.includes(c)
+                ? ' <span class="ai-eva-dd-has-data">\u2713 data</span>' : '');
+            btn.addEventListener('mousedown', function (e) {
+                e.preventDefault(); // prevent input blur before click fires
+                selectedCountry = c;
+                searchInput.value = c;
+                dropdown.classList.remove('dd-open');
+            });
+            dropdown.appendChild(btn);
+        });
+        dropdown.classList.add('dd-open');
     }
+
+    searchInput.addEventListener('input', function () { renderDropdown(this.value); });
+    searchInput.addEventListener('focus', function () { renderDropdown(this.value || ''); });
+    searchInput.addEventListener('blur',  function () {
+        setTimeout(function () { dropdown.classList.remove('dd-open'); }, 150);
+    });
+
+    /* ── Key picker ── */
+    document.querySelectorAll('[data-key-label]').forEach(function (lbl) {
+        var radio = lbl.querySelector('input[type="radio"]');
+        if (!radio) return;
+        radio.addEventListener('change', function () {
+            document.querySelectorAll('[data-key-label]').forEach(function (l) {
+                l.classList.remove('is-selected');
+            });
+            lbl.classList.add('is-selected');
+        });
+    });
+
+    /* ── Helpers ── */
+    function ts() { return new Date().toTimeString().slice(0, 8); }
+
+    function addLog(msg, t) {
+        spLog.style.display = 'flex';
+        var row = document.createElement('div');
+        row.className = 'sp-log-row' + (t ? ' is-' + t : '');
+        row.innerHTML = '<span class="sp-log-time">' + ts() + '</span><span class="sp-log-msg">' + msg + '</span>';
+        spLog.appendChild(row);
+        spLog.scrollTop = spLog.scrollHeight;
+    }
+
+    function setPhase(p) {
+        phase = p;
+        var active = p !== 'idle';
+        spHeaderRow.style.display  = active ? 'flex'  : 'none';
+        spHdrSpin.style.display    = p === 'running' ? 'block' : 'none';
+        spCancelBtn.style.display  = p === 'running' ? 'inline-flex' : 'none';
+        spHdrTitle.textContent     = p === 'running'  ? 'Evaluation Running'
+                                   : p === 'complete' ? 'Evaluation Complete'
+                                   : p === 'error'    ? 'Evaluation Failed'
+                                   : '';
+        spHdrTitle.style.color     = p === 'complete' ? '#16a34a'
+                                   : p === 'error'    ? '#dc2626'
+                                   : '#0f172a';
+        spRunning.style.display    = p === 'running'  ? 'block' : 'none';
+        spComplete.style.display   = p === 'complete' ? 'flex'  : 'none';
+        spError.style.display      = p === 'error'    ? 'flex'  : 'none';
+        if (active) statusPanel.classList.add('sp-visible');
+    }
+
+    function setProgress(pct) {
+        progress = pct;
+        spBar.style.width    = pct + '%';
+        spProgressTxt.textContent = pct + '%';
+    }
+
+    function setLoading(val) {
+        loading = val;
+        submitBtn.disabled   = val || !HAS_KEYS;
+        submitIdle.style.display    = val ? 'none'         : 'flex';
+        submitLoading.style.display = val ? 'flex'         : 'none';
+    }
+
+    function getSelectedKeyId() {
+        var checked = document.querySelector('input[name="ai_key"]:checked');
+        return checked ? checked.value : '';
+    }
+
+    /* ── Submit ── */
+    submitBtn.addEventListener('click', function () {
+        if (loading || !HAS_KEYS) return;
+
+        var country = selectedCountry || searchInput.value.trim();
+        if (!country) {
+            showToast && showToast('Please select a country.', 'error');
+            return;
+        }
+
+        pollingActive    = true;
+        finalErrorLogged = false;
+        seenAttemptLog   = [];
+        setLoading(true);
+        setPhase('running');
+        setProgress(0);
+        spStageTxt.textContent    = 'Submitting request...';
+        spStageRow.style.display  = 'flex';
+        spProviderRow.style.display = 'none';
+        spLog.innerHTML = '';
+        spLog.style.display = 'none';
+        prevStage = '';
+        resultLink = '';
+        addLog('Evaluation submitted');
+
+        var body = {
+            country: country,
+            additional_instructions: instrTA.value.trim()
+        };
+        var keyId = getSelectedKeyId();
+        if (keyId !== '') body.selected_key_id = keyId;
+
+        fetch(EVALUATE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify(body)
+        })
+        .then(function (r) {
+            return r.json().catch(function () {
+                // Server returned non-JSON (rate-limit page, 500 HTML, etc.)
+                var msg = r.status === 429
+                    ? 'Rate limit reached — please wait a minute before retrying.'
+                    : 'Server error (' + r.status + '). Check server logs.';
+                throw new Error(msg);
+            });
+        })
+        .then(function (d) {
+            if (!d.success) {
+                setPhase('error');
+                spErrMsg.textContent = d.error || 'Server rejected the request.';
+                addLog(d.error || 'Server rejected the request.', 'err');
+                showToast && showToast(d.error || 'Request failed.', 'error');
+                setLoading(false);
+                return;
+            }
+            addLog('Request accepted — polling for status');
+            resultLink = '/ai/analysis/' + d.analysis_id;
+            spResultLink.href = resultLink;
+            currentAnalysisId = d.analysis_id;
+            poll(d.analysis_id, 0);
+        })
+        .catch(function (e) {
+            setPhase('error');
+            var msg = e.message || 'Network error — server unreachable.';
+            spErrMsg.textContent = msg;
+            addLog(msg, 'err');
+            showToast && showToast(msg, 'error');
+            setLoading(false);
+        });
+    });
+
+    /* ── Polling ── */
+    // 450 attempts × 2 s = 900 s — matches the server-side EVAL_TIMEOUT_SECONDS.
+    var MAX_POLL_ATTEMPTS = 450;
+
+    function stopPolling() {
+        pollingActive = false;
+        setLoading(false);
+    }
+
+    function poll(id, attempt) {
+        if (!pollingActive) return;
+
+        if (attempt >= MAX_POLL_ATTEMPTS) {
+            pollingActive = false;
+            setPhase('error');
+            spErrMsg.textContent = 'Timed out — the job may still run in the background. Check the archive.';
+            if (!finalErrorLogged) { finalErrorLogged = true; addLog('Timed out waiting for result.', 'err'); }
+            showToast && showToast('Evaluation timed out.', 'error');
+            stopPolling();
+            return;
+        }
+
+        setTimeout(function () {
+            if (!pollingActive) return;
+
+            fetch('/ai/analysis/' + id + '/status')
+            .then(function (r) {
+                if (!pollingActive) return null;
+                if (r.status === 403 || r.status === 404) {
+                    pollingActive = false;
+                    var msg = r.status === 403 ? 'Session expired — please refresh.' : 'Evaluation record not found.';
+                    setPhase('error');
+                    spErrMsg.textContent = msg;
+                    if (!finalErrorLogged) { finalErrorLogged = true; addLog(msg, 'err'); }
+                    showToast && showToast(msg, 'error');
+                    stopPolling();
+                    return null;
+                }
+                if (!r.ok) { poll(id, attempt + 1); return null; }
+                return r.json();
+            })
+            .then(function (d) {
+                if (!d || !pollingActive) return;
+                var meta = d.metadata || {};
+
+                if ((meta.progress || 0) > progress) setProgress(meta.progress);
+
+                if (meta.stage) {
+                    spStageTxt.textContent   = meta.stage;
+                    spStageRow.style.display = 'flex';
+                }
+                if (meta.current_provider) {
+                    spProviderTxt.textContent   = meta.current_provider;
+                    spProviderRow.style.display = 'flex';
+                }
+                if (meta.current_model) {
+                    spModelTxt.textContent   = '· ' + meta.current_model;
+                    spModelTxt.style.display = 'inline';
+                }
+
+                // Render backend run_log entries we haven't shown yet
+                if (Array.isArray(meta.run_log)) {
+                    meta.run_log.forEach(function (entry) {
+                        if (!entry) return;
+                        if (seenAttemptLog.indexOf(entry) === -1) {
+                            seenAttemptLog.push(entry);
+                            var lo = entry.toLowerCase();
+                            var t = (lo.includes('http 4') || lo.includes('http 5') || lo.includes('incomplete') || lo.includes('exhausted')) ? 'err'
+                                  : (lo.includes('failed') || lo.includes('rejected') || lo.includes('skipping')) ? 'warn'
+                                  : (lo.includes('succeeded') || lo.includes('complete') || lo.includes('received')) ? 'ok'
+                                  : 'info';
+                            addLog(entry, t);
+                        }
+                    });
+                }
+
+                if (d.error) {
+                    pollingActive = false;
+                    setPhase('error');
+                    var errMsg = meta.last_error || meta.stage || 'Unknown error.';
+                    spErrMsg.textContent = errMsg;
+                    if (!finalErrorLogged) { finalErrorLogged = true; addLog('Error: ' + errMsg, 'err'); }
+                    showToast && showToast('Evaluation failed.', 'error');
+                    stopPolling();
+                    return;
+                }
+
+                if (d.completed) {
+                    pollingActive = false;
+                    setProgress(100);
+                    setPhase('complete');
+                    var doneProvider = meta.provider_used || spProviderTxt.textContent;
+                    var doneModel    = meta.model_used    || '';
+                    spDoneSub.textContent = doneProvider
+                        ? 'Completed via ' + doneProvider + (doneModel ? ' / ' + doneModel : '')
+                        : 'Completed';
+                    addLog('Completed via ' + (doneProvider || 'unknown provider'), 'ok');
+                    showToast && showToast('Evaluation completed.', 'success');
+                    stopPolling();
+                    return;
+                }
+
+                poll(id, attempt + 1);
+            })
+            .catch(function () {
+                if (pollingActive) poll(id, attempt + 1);
+            });
+        }, 2000);
+    }
+
+    /* ── Cancel ── */
+    function cancelEvaluation() {
+        if (!currentAnalysisId) return;
+        if (!confirm('Cancel this evaluation?')) return;
+
+        if (spCancelBtn) { spCancelBtn.disabled = true; spCancelBtn.textContent = 'Cancelling...'; }
+
+        fetch('/ai/analysis/' + currentAnalysisId + '/cancel', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCSRFToken() },
+            body: JSON.stringify({})
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+            if (d.success) {
+                pollingActive = false;
+                setPhase('error');
+                spErrMsg.textContent = 'Cancelled by user.';
+                addLog('Cancelled by user.', 'warn');
+                showToast && showToast('Evaluation cancelled.', 'success');
+                stopPolling();
+            } else {
+                showToast && showToast(d.error || 'Could not cancel.', 'error');
+                if (spCancelBtn) { spCancelBtn.disabled = false; spCancelBtn.textContent = 'Cancel'; }
+            }
+        })
+        .catch(function () {
+            showToast && showToast('Network error.', 'error');
+            if (spCancelBtn) { spCancelBtn.disabled = false; spCancelBtn.textContent = 'Cancel'; }
+        });
+    }
+
+    window.cancelEvaluation = cancelEvaluation;
+
+})();
 </script>
 {% endblock %}

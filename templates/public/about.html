@@ -79,10 +79,10 @@
         z-index: 2;
         padding: 12rem 1.5rem 10rem;
         background: #020617;
-        background-image: linear-gradient(rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.08)), url('static/assets/aboutPage/about-hero.jpg');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
+        background-image:
+            radial-gradient(ellipse 80% 60% at 70% 20%, rgba(217, 119, 6, 0.12) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 15% 80%, rgba(56, 189, 248, 0.07) 0%, transparent 55%),
+            radial-gradient(ellipse 50% 40% at 50% 50%, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -93,7 +93,7 @@
 
     @media (min-width: 1024px) {
         .abt-hero {
-            padding: 7.2rem 4rem 8rem;
+            padding: 8.2rem 4rem 2.8rem;
         }
     }
 
@@ -104,24 +104,24 @@
 
     .abt-hero-glow {
         position: absolute;
-        top: -30%;
-        right: -20%;
-        width: 70vw;
-        height: 70vw;
-        background: radial-gradient(circle, rgba(217, 119, 6, 0.015) 0%, rgba(15, 23, 42, 0) 70%);
-        filter: blur(100px);
+        top: -20%;
+        right: -10%;
+        width: 65vw;
+        height: 65vw;
+        background: radial-gradient(circle, rgba(217, 119, 6, 0.18) 0%, rgba(15, 23, 42, 0) 65%);
+        filter: blur(80px);
         pointer-events: none;
         animation: abt-hero-pulse 10s ease-in-out infinite;
     }
 
     .abt-hero-glow-2 {
         position: absolute;
-        bottom: -20%;
-        left: -10%;
+        bottom: -15%;
+        left: -5%;
         width: 50vw;
         height: 50vw;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0) 70%);
-        filter: blur(100px);
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(15, 23, 42, 0) 65%);
+        filter: blur(80px);
         pointer-events: none;
         animation: abt-hero-pulse 12s ease-in-out infinite reverse;
     }
@@ -215,47 +215,39 @@
 
     .abt-mission-h2 {
         font-family: 'Outfit', sans-serif;
-        font-size: 2.25rem;
-        font-weight: 800;
-        color: #ffffff;
-        margin-bottom: 2rem;
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+        font-weight: 700;
+        color: #f59e0b;
+        margin-bottom: 1.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    .abt-mission-h2::after {
-        content: '';
-        height: 1px;
-        flex-grow: 1;
-        background: linear-gradient(to right, rgba(245, 158, 11, 0.5), transparent);
+        letter-spacing: 0.12em;
     }
 
     .abt-mission-p {
         font-family: 'Inter', sans-serif;
-        font-size: 1.35rem;
+        font-size: clamp(1.1rem, 2.5vw, 1.4rem);
         font-weight: 300;
-        line-height: 1.8;
-        color: #f1f5f9;
-        margin-bottom: 2.5rem;
+        line-height: 1.85;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 2rem;
+        max-width: 940px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .abt-mission-p strong {
         font-weight: 700;
-        color: #f59e0b;
+        color: #fcd34d;
     }
 
     .abt-mission-sub {
         font-family: 'Inter', sans-serif;
-        font-size: 1.125rem;
+        font-size: 1rem;
         font-weight: 400;
-        color: #94a3b8;
-        line-height: 1.8;
-        border-left: 3px solid #d97706;
-        padding-left: 2rem;
-        margin: 0;
+        color: rgba(255, 255, 255, 0.45);
+        line-height: 1.85;
+        max-width: 580px;
+        margin: 0 auto;
     }
 
     /* --------------------------------------------------------------------------
@@ -265,7 +257,7 @@
         position: relative;
         z-index: 2;
         padding: 6rem 1.5rem;
-        background: #cbc4c4;
+        background: #f1f5f9;
         border-top: 1px solid rgba(15, 23, 42, 0.05);
     }
 
@@ -303,38 +295,64 @@
 
     .abt-def-card {
         background: #ffffff;
-        border-radius: 4rem;
-        padding: 0 !important;
-        box-shadow: 0 10px 40px rgba(15, 23, 42, 0.02);
-        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        border-radius: 2rem;
+        padding: 0;
+        box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e8edf5;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
         display: flex;
         flex-direction: column;
         position: relative;
         overflow: hidden;
     }
 
-    .abt-def-img {
-        width: 100%;
-        height: 280px;
-        position: relative;
-        overflow: hidden;
-        background: #0f172a;
+    .abt-def-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 24px 60px rgba(217, 119, 6, 0.12);
+        border-color: rgba(217, 119, 6, 0.25);
     }
 
-    .abt-def-img img {
+    /* Top amber gradient accent bar */
+    .abt-def-accent {
+        height: 4px;
         width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: 1;
-        filter: saturate(1.5) brightness(1.1);
+        flex-shrink: 0;
+        background: linear-gradient(90deg, #b45309, #d97706, #f59e0b, #fcd34d);
+        transition: height 0.3s ease;
     }
 
+    .abt-def-card:hover .abt-def-accent {
+        height: 5px;
+    }
+
+    /* Large decorative background number */
+    .abt-def-bg-label {
+        position: absolute;
+        bottom: 1rem;
+        right: 1.75rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 9rem;
+        font-weight: 900;
+        color: rgba(217, 119, 6, 0.05);
+        line-height: 1;
+        pointer-events: none;
+        user-select: none;
+        transition: color 0.4s ease, transform 0.4s ease;
+        z-index: 0;
+    }
+
+    .abt-def-card:hover .abt-def-bg-label {
+        color: rgba(217, 119, 6, 0.09);
+        transform: scale(1.05) rotate(-3deg);
+    }
 
     .abt-def-cinner {
-        padding: 2.5rem;
+        padding: 2.5rem 2.5rem 3rem;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
+        position: relative;
+        z-index: 1;
     }
 
     .abt-def-card::after {
@@ -463,11 +481,11 @@
         position: relative;
         z-index: 2;
         padding: 4rem 1.5rem !important;
-        background: linear-gradient(rgba(220, 141, 5, 0.2), rgba(248, 250, 252, 0.2)),
-            url('/static/assets/aboutPage/workflow.jpg');
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
+        background: #1a0e00;
+        background-image:
+            radial-gradient(ellipse 80% 60% at 80% 10%, rgba(212, 140, 20, 0.25) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 50% at 10% 90%, rgba(139, 69, 19, 0.3) 0%, transparent 55%),
+            radial-gradient(ellipse 50% 40% at 50% 50%, rgba(101, 48, 5, 0.4) 0%, transparent 80%);
         border-top: 1px solid rgba(16, 185, 129, 0.05);
         overflow: hidden;
     }
@@ -499,7 +517,7 @@
         font-family: 'Outfit', sans-serif;
         font-size: clamp(2.5rem, 5vw, 4.5rem);
         font-weight: 900;
-        color: #0f172a;
+        color: #ffffff;
         margin: 0;
         letter-spacing: -0.02em;
     }
@@ -546,10 +564,11 @@
     }
 
     .abt-proc-step {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        border: 4px solid rgba(16, 185, 129, 0.1);
-        border-radius: 5rem;
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 2rem;
         padding: 2.5rem;
         position: relative;
         box-shadow: 0 10px 40px rgba(15, 23, 42, 0.02);
@@ -558,13 +577,12 @@
         flex-direction: column;
         overflow: hidden;
         z-index: 2;
+        transform: translateY(-10px);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+        border-color: rgba(217, 119, 6, 0.35);
+        background: rgba(255, 255, 255, 0.09);
     }
 
-    .abt-proc-step:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 40px 80px rgba(16, 185, 129, 0.08);
-        border-color: rgba(16, 185, 129, 0.3);
-    }
 
     .abt-proc-top {
         display: flex;
@@ -579,19 +597,14 @@
         font-family: 'Outfit', sans-serif;
         font-size: clamp(4rem, 8vw, 6rem);
         font-weight: 900;
-        color: transparent;
-        -webkit-text-stroke: 1px rgba(15, 23, 42, 0.08);
         line-height: 1;
         margin-bottom: 0;
         transition: all 0.5s;
-        color: rgba(16, 185, 129, 0.9);
+        color: rgba(212, 140, 20, 0.5);
+         -webkit-text-stroke: 1px transparent;
+        transform: scale(1.1) translateX(10px) ;
     }
 
-    .abt-proc-step:hover .abt-proc-num {
-
-        -webkit-text-stroke: 1px transparent;
-        transform: scale(1.1) translateX(10px) rotate(-5deg);
-    }
 
     .abt-proc-content {
         position: relative;
@@ -602,7 +615,7 @@
         font-family: 'Outfit', sans-serif;
         font-size: 1.75rem;
         font-weight: 800;
-        color: #0f172a;
+        color: #ffffff;
         margin: 0 0 1.25rem 0;
         display: flex;
         align-items: center;
@@ -613,14 +626,14 @@
         content: '';
         width: 2.5rem;
         height: 3px;
-        background: #10b981;
+        background: #d97706;
         border-radius: 9999px;
     }
 
     .abt-proc-txt {
         font-family: 'Inter', sans-serif;
         font-size: 1.125rem;
-        color: #64748b;
+        color: rgba(255, 255, 255, 0.55);
         line-height: 1.8;
         font-weight: 400;
         margin: 0;
@@ -629,8 +642,8 @@
     .abt-proc-icon-box {
         width: 4rem;
         height: 4rem;
-        background: #ffffff;
-        border: 1px solid rgba(16, 185, 129, 0.2);
+        background: rgba(212, 140, 20, 0.1);
+        border: 1px solid rgba(212, 140, 20, 0.25);
         border-radius: 1.25rem;
         display: flex;
         align-items: center;
@@ -642,12 +655,7 @@
         transition: all 0.4s ease;
     }
 
-    .abt-proc-step:hover .abt-proc-icon-box {
-        background: #10b981;
-        color: #ffffff;
-        transform: translateY(-5px) scale(1.1);
-        box-shadow: 0 15px 30px rgba(16, 185, 129, 0.2);
-    }
+    
 
     /* Flow Connectors */
     .abt-proc-grid::after {
@@ -674,14 +682,13 @@
     .abt-info {
         position: relative;
         z-index: 2;
-        padding: 8rem 1.5rem;
+        padding: 4rem 1.5rem;
         background: #040d21;
-        /* even darker deep section */
     }
 
     @media (min-width: 768px) {
         .abt-info {
-            padding: 5rem 3rem;
+            padding: 4rem 3rem;
         }
     }
 
@@ -718,12 +725,12 @@
         position: relative;
         background: #0f172a;
         overflow: hidden;
-        height: 300px;
+        height: 200px;
     }
 
     @media (min-width: 900px) {
         .abt-ib1-img {
-            width: 55%;
+            width: 35%;
             height: auto;
             flex-shrink: 0;
         }
@@ -736,12 +743,6 @@
         opacity: 1;
         /* mix-blend-mode: luminosity; */
         transition: transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .abt-info-box:hover .abt-ib1-img img {
-        transform: scale(1.1);
-        /* opacity: 0.9; */
-        mix-blend-mode: normal;
     }
 
     .abt-ib1-badge {
@@ -764,7 +765,7 @@
     }
 
     .abt-ib1-cont {
-        padding: 4rem;
+        padding: 2rem 2.5rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -772,14 +773,14 @@
 
     @media (min-width: 900px) {
         .abt-ib1-cont {
-            width: 55%;
-            padding: 5rem;
+            width: 65%;
+            padding: 2.5rem 3rem;
         }
     }
 
     .abt-ib1-h3 {
         font-family: 'Outfit', sans-serif;
-        font-size: 2.5rem;
+        font-size: 1.75rem;
         font-weight: 900;
         color: #020617;
         margin: 0 0 2rem 0;
@@ -788,9 +789,9 @@
 
     .abt-ib1-p {
         font-family: 'Inter', sans-serif;
-        font-size: 1.25rem;
+        font-size: 0.95rem;
         color: rgba(15, 23, 42, 0.7);
-        line-height: 1.8;
+        line-height: 1.75;
         font-weight: 400;
         margin: 0;
     }
@@ -840,7 +841,7 @@
         overflow: hidden;
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
         transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 4px solid rgba(77, 255, 0, 0.9) !important;
+        border: 1px solid #e2e8f0;
     }
 
     .abt-ib2-inner {
@@ -855,13 +856,11 @@
             flex-direction: row;
             align-items: center;
             padding: 5rem;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
         }
     }
 
-    .abt-ib2:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
-    }
+   
 
     .abt-ib2-left {
         flex: 1;
@@ -1000,10 +999,7 @@
         position: relative;
         overflow: hidden;
         transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 4px solid rgba(255, 94, 0, 0.94);
-        transform: translateY(-8px);
-        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.9);
-        border-color: rgba(245, 158, 11, 0.3);
+        border: 1px solid rgba(245, 158, 11, 0.2);
     }
 
     @media (min-width: 900px) {
@@ -1020,7 +1016,7 @@
         position: absolute;
         inset: 0;
         opacity: 0.05;
-        background-image: radial-gradient(#ffffff 1px, transparent 1px);
+        background-image: radial-gradient(#0f172a 1px, transparent 1px);
         background-size: 30px 30px;
         pointer-events: none;
     }
@@ -1253,10 +1249,6 @@
         }
 
         /* ── Process section ── */
-        .abt-proc {
-            background-attachment: scroll;
-        }
-
         .abt-proc-head {
             margin-bottom: 2.5rem;
         }
@@ -1294,7 +1286,7 @@
         }
 
         .abt-ib1-img {
-            height: 200px;
+            height: 180px;
         }
 
         .abt-ib1-cont {
@@ -1409,21 +1401,18 @@
             <div class="abt-hero-dots"></div>
         </div>
         <div class="abt-hero-wrap">
-            <span class="abt-hero-sup">Our Mission</span>
             <h1 class="abt-hero-h1">About <span>DSTAIR</span></h1>
 
-            <div class="abt-mission-panel">
-                <h2 class="abt-mission-h2">Understanding Corruption</h2>
-                <p class="abt-mission-p">
-                    Corruption is the use of public resources for private gain — a <strong>betrayal of the public
-                        trust</strong> invested in those individuals with access to public resources.
-                </p>
-                <p class="abt-mission-sub">
-                    This web-based decision support system provides a platform for analysing the effectiveness of
-                    current institutions by gauging the legitimacy of different spheres of governance and social
-                    interaction.
-                </p>
-            </div>
+            <h2 class="abt-mission-h2">Understanding Corruption</h2>
+            <p class="abt-mission-p">
+                Corruption is the use of public resources for private gain — a <strong>betrayal of the public
+                    trust</strong> invested in those individuals with access to public resources. This web-based decision support system provides a platform for analysing the effectiveness of
+                current institutions by gauging the legitimacy of different spheres of governance and social
+                interaction.
+            </p>
+            <p class="abt-mission-sub">
+                
+            </p>
         </div>
     </section>
 
@@ -1431,10 +1420,8 @@
     <section class="abt-def">
         <div class="abt-def-grid">
             <div class="abt-def-card">
-                <div class="abt-def-img">
-                    <img src="{{ url_for('static', filename='assets/aboutPage/whydstairdiff.jpg') }}"
-                        alt="Legal & Governance">
-                </div>
+                <div class="abt-def-accent"></div>
+                <span class="abt-def-bg-label">01</span>
                 <div class="abt-def-cinner">
                     <span class="abt-def-tag">Context</span>
                     <h3 class="abt-def-h3">
@@ -1452,10 +1439,8 @@
             </div>
 
             <div class="abt-def-card">
-                <div class="abt-def-img">
-                    <img src="{{ url_for('static', filename='assets/aboutPage/whtisdstair.jpg') }}"
-                        alt="Institutional Analysis">
-                </div>
+                <div class="abt-def-accent"></div>
+                <span class="abt-def-bg-label">02</span>
                 <div class="abt-def-cinner">
                     <span class="abt-def-tag">Distinction</span>
                     <h3 class="abt-def-h3">
@@ -1479,7 +1464,7 @@
     <!-- HOW IT WORKS OVERVIEW -->
     <section class="abt-proc">
         <div class="abt-proc-head">
-            <span class="abt-proc-sup">The Lifecycle</span>
+            
             <h2 class="abt-proc-h2">The Analysis Workflow</h2>
         </div>
 

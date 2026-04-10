@@ -148,8 +148,8 @@
                 document.getElementById(`username-${id}`).textContent = data.username;
                 document.getElementById(`password-${id}`).textContent = data.password;
                 
-                document.getElementById(`creds-${id}`).classList.add('block');
-                
+                document.getElementById(`creds-${id}`).style.display = 'block';
+
                 if (badge) {
                     badge.className = 'a-acs-badge a-acs-badge--approved';
                     badge.textContent = 'approved';
@@ -157,7 +157,7 @@
 
                 // Hide approve/reject buttons
                 const btnDiv = card ? card.querySelector('.a-acs-acts') : null;
-                if (btnDiv) btnDiv.classList.add('hidden');
+                if (btnDiv) btnDiv.style.display = 'none';
             } else {
                 alert('Error: ' + (data.error || 'Unknown error'));
             }

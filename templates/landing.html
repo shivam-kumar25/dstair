@@ -1249,10 +1249,8 @@
 
         <div class="lan-diff-grid js-scroll-reveal">
             <div class="lan-diff-card">
-                <div class="lan-diff-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/homeImages/how-dstair-diff/1.jpg') }}"
-                        alt="Granular Analysis" class="lan-diff-card-img">
-                </div>
+                <div class="lan-diff-accent-bar"></div>
+                <span class="lan-diff-num">01</span>
                 <div class="lan-diff-content">
                     <div class="lan-diff-header">
                         <div class="lan-diff-ico-box">
@@ -1267,18 +1265,14 @@
                     </div>
                     <p class="lan-diff-p">
                         Instead of making an overall judgment about a country, DSTAIR looks for institutional weaknesses
-                        in
-                        each of the many core spheres of the state and society: the constitution, courts, legislature,
-                        the
-                        executive, administration, political parties, media, the economy, and civil society.
+                        in each of the many core spheres of the state and society: the constitution, courts, legislature,
+                        the executive, administration, political parties, media, the economy, and civil society.
                     </p>
                 </div>
             </div>
             <div class="lan-diff-card">
-                <div class="lan-diff-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/homeImages/how-dstair-diff/3.jpg') }}"
-                        alt="User Driven" class="lan-diff-card-img">
-                </div>
+                <div class="lan-diff-accent-bar"></div>
+                <span class="lan-diff-num">02</span>
                 <div class="lan-diff-content">
                     <div class="lan-diff-header">
                         <div class="lan-diff-ico-box">
@@ -1295,18 +1289,14 @@
                     <p class="lan-diff-p">
                         It assumes that both the formal rules and informal practices in these spheres are important
                         determinants of their overall legitimacy. DSTAIR is user driven; the program prompts users to
-                        make
-                        their own assessment about which particular institutions are legitimate and which are most in
-                        need
-                        of reform.
+                        make their own assessment about which particular institutions are legitimate and which are most
+                        in need of reform.
                     </p>
                 </div>
             </div>
             <div class="lan-diff-card">
-                <div class="lan-diff-img-wrap">
-                    <img src="{{ url_for('static', filename='assets/homeImages/how-dstair-diff/2.jpg') }}"
-                        alt="Comparative Logic" class="lan-diff-card-img">
-                </div>
+                <div class="lan-diff-accent-bar"></div>
+                <span class="lan-diff-num">03</span>
                 <div class="lan-diff-content">
                     <div class="lan-diff-header">
                         <div class="lan-diff-ico-box">
@@ -1319,10 +1309,9 @@
                     </div>
                     <p class="lan-diff-p">
                         Policy recommendations which utilize legitimate institutions are identified by tabulating the
-                        user's
-                        assessments. The flexibility of the DSTAIR allows users to compare their own judgment with that
-                        of
-                        others, and to review alternative recommendations until they find what matches their needs.
+                        user's assessments. The flexibility of the DSTAIR allows users to compare their own judgment
+                        with that of others, and to review alternative recommendations until they find what matches
+                        their needs.
                     </p>
                 </div>
             </div>
@@ -1481,77 +1470,68 @@
         }
     }
 
-    /* Upgraded Card Styling */
+    /* Card Styling */
     .lan-diff-card {
         position: relative;
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #e8edf5;
         border-radius: 1.5rem;
         overflow: hidden;
-        /* Important for edge-to-edge image */
         color: #475569;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.35s ease, border-color 0.35s ease;
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
         display: flex;
         flex-direction: column;
+    }
+
+    .lan-diff-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(217, 119, 6, 0.15);
-        border-color: rgba(217, 119, 6, 0.3);
+        box-shadow: 0 20px 48px rgba(217, 119, 6, 0.14);
+        border-color: rgba(217, 119, 6, 0.28);
     }
 
-    /* New Image Wrapper & Image */
-    .lan-diff-img-wrap {
-        position: relative;
+    /* Top accent gradient bar */
+    .lan-diff-accent-bar {
+        height: 4px;
         width: 100%;
-        height: 220px;
-        overflow: hidden;
+        flex-shrink: 0;
+        background: linear-gradient(90deg, #b45309, #d97706, #f59e0b, #fcd34d);
+        transition: height 0.3s ease;
     }
 
-    /* Mobile image height adjustment */
-    @media (max-width: 768px) {
-        .lan-diff-img-wrap {
-            height: 160px;
-        }
+    .lan-diff-card:hover .lan-diff-accent-bar {
+        height: 5px;
     }
 
-    .lan-diff-card-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-
-    /* Number Badge Re-positioned */
+    /* Decorative background number */
     .lan-diff-num {
         position: absolute;
-        bottom: -1rem;
+        bottom: 0.75rem;
         right: 1.5rem;
         font-family: 'Outfit', sans-serif;
-        font-size: 4rem;
+        font-size: 8rem;
         font-weight: 900;
-        color: rgba(255, 255, 255, 0.9);
-        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
-        /* Adds a crisp outline */
-        text-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        color: rgba(217, 119, 6, 0.055);
         line-height: 1;
         pointer-events: none;
-        transition: all 0.4s ease;
-        z-index: 2;
+        user-select: none;
+        transition: color 0.35s ease, transform 0.35s ease;
+        z-index: 0;
     }
 
     .lan-diff-card:hover .lan-diff-num {
-        color: #fde68a;
-        transform: scale(1.1) rotate(-5deg);
+        color: rgba(217, 119, 6, 0.1);
+        transform: scale(1.05) rotate(-3deg);
     }
 
     /* Content Area */
     .lan-diff-content {
-        padding: 2.5rem 2rem;
+        padding: 2.25rem 2rem 2rem;
         position: relative;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        background: #ffffff;
+        z-index: 1;
     }
 
     .lan-diff-header {
@@ -1622,10 +1602,6 @@
     }
 
     @media (max-width: 480px) {
-        .lan-diff-img-wrap {
-            height: 140px;
-        }
-
         .lan-diff-content {
             padding: 1rem 1rem 1.25rem;
         }
@@ -1636,6 +1612,10 @@
 
         .lan-diff-p {
             font-size: 0.875rem;
+        }
+
+        .lan-diff-num {
+            font-size: 6rem;
         }
     }
 

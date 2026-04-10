@@ -3,6 +3,8 @@ Symmetric encryption utilities for at-rest secret storage.
 Uses Fernet (AES-128-CBC + HMAC-SHA256) with a key derived from the app SECRET_KEY.
 
 Important: If SECRET_KEY changes, previously encrypted values will be unreadable.
+The key is derived fresh on every call so SECRET_KEY rotations take effect immediately
+without requiring a server restart.
 """
 import base64
 import hashlib
@@ -12,22 +14,27 @@ from cryptography.fernet import Fernet, InvalidToken
 
 logger = logging.getLogger(__name__)
 
-# ── Lazy-initialised cipher ────────────────────────────────────
-# The Fernet instance is created once on first call, then cached.
-_fernet_instance = None
+# Cache Fernet instances keyed by the SECRET_KEY value they were derived from.
+# This means a SECRET_KEY rotation is picked up immediately (old key → new cache
+# entry, old entry is no longer used) while avoiding repeated SHA-256 + Fernet
+# object construction on every decrypt/encrypt call (e.g. masked_key rendering).
+_fernet_cache: dict[str, "Fernet"] = {}
 
 
-def _get_fernet():
-    """Return a cached Fernet cipher derived from the app's SECRET_KEY."""
-    global _fernet_instance
-    if _fernet_instance is None:
-        from flask import current_app
-        secret = current_app.config['SECRET_KEY']
-        # Derive a URL-safe 32-byte key from SECRET_KEY using SHA-256
+def _get_fernet() -> "Fernet":
+    """Return a Fernet cipher for the current app's SECRET_KEY.
+
+    Results are cached per unique SECRET_KEY value so rotation is transparent
+    (a new key produces a new cache entry) but the common case (same key) pays
+    the construction cost only once.
+    """
+    from flask import current_app
+    secret = current_app.config["SECRET_KEY"]
+    if secret not in _fernet_cache:
         derived = hashlib.sha256(secret.encode()).digest()
         key = base64.urlsafe_b64encode(derived)
-        _fernet_instance = Fernet(key)
-    return _fernet_instance
+        _fernet_cache[secret] = Fernet(key)
+    return _fernet_cache[secret]
 
 
 def encrypt_value(plaintext: str) -> str:

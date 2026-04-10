@@ -102,22 +102,29 @@
     transform: translateY(-2px);
 }
 
-/* Default card background — clean slate, not white */
-.tl-tool-recommendation-card { background: #f1f5f9; border-color: #e2e8f0; }
+/* Default card — not triggered: cool blue-grey */
+.tl-tool-recommendation-card {
+    background: #e8edf5;
+    border-color: #c5d0e0;
+}
+.tl-tool-recommendation-card .tl-tool-card-name-heading span { color: #1e3a5f !important; }
+.tl-tool-recommendation-card .tl-tool-card-description-body { color: #374151; }
 
-/* Triggered — bold dark green */
+/* Triggered — warm amber */
 .tl-tool-recommendation-card--triggered {
-    background: #d9ebc2 !important;
-    border-color: #065f46 !important;
-    box-shadow: 0 4px 16px rgba(6,78,59,0.3);
+    background: #fef3c7 !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 4px 16px rgba(245,158,11,0.2);
 }
-.tl-tool-recommendation-card--triggered .tl-tool-card-description-body { color: rgba(255,255,255,0.7); }
-.tl-tool-recommendation-card--triggered .tl-tool-card-footer-row { border-top-color: rgba(255,255,255,0.1); }
+.tl-tool-recommendation-card--triggered .tl-tool-card-name-heading span { color: #92400e !important; }
+.tl-tool-recommendation-card--triggered .tl-tool-card-description-body { color: #78350f !important; }
+.tl-tool-recommendation-card--triggered .tl-tool-card-footer-row { border-top-color: rgba(245,158,11,0.2); }
 .tl-tool-recommendation-card--triggered .tl-tool-card-detail-btn {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #92400e;
 }
-.tl-tool-recommendation-card--triggered .tl-tool-card-detail-btn:hover { background: rgba(255,255,255,0.25); }
+.tl-tool-recommendation-card--triggered .tl-tool-card-detail-btn:hover { background: rgba(245,158,11,0.25); }
 
 .tl-tool-card-top-row {
     display: flex;
@@ -312,92 +319,6 @@
     padding: 2rem 0;
 }
 
-/* ── Right: Infinite scroll image panel ──────────────────────── */
-.tl-tools-image-scroll-panel {
-    width: 480px !important;
-    flex-shrink: 0;
-    background: #3A3B3A;
-    border-left: none;
-    position: sticky;
-    top: 137px;
-    max-height: calc(100vh - 137px);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Infinite scroll track */
-.tl-scroll-track-outer {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-}
-.tl-scroll-track-outer::before,
-.tl-scroll-track-outer::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0;
-    height: 60px;
-    z-index: 2;
-    pointer-events: none;
-}
-.tl-scroll-track-outer::before {
-    top: 0;
-    background: linear-gradient(to bottom, #fdfdfd00, transparent);
-}
-.tl-scroll-track-outer::after {
-    bottom: 0;
-    background: linear-gradient(to top, #ffffff00, transparent);
-}
-.tl-scroll-track-inner {
-    display: flex;
-    flex-direction: column;
-    animation: tl-scroll-up 80s linear infinite;
-    padding: 0.75rem 0.875rem;
-    gap: 0.75rem;
-}
-
-
-@keyframes tl-scroll-up {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
-}
-
-.tl-scroll-image-card {
-    border-radius: 0.75rem;
-    overflow: hidden;
-    position: relative;
-    height: 208px;
-    background: #3A3B3A;
-    flex-shrink: 0;
-    cursor: default;
-}
-.tl-scroll-image-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
-}
-
-.tl-scroll-image-card-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(2,44,34,0.005) 0%, transparent 55%);
-}
-.tl-scroll-image-card-label {
-    position: absolute;
-    bottom: 0.625rem;
-    left: 0.75rem;
-    right: 0.75rem;
-    font-family: 'Outfit', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.01em;
-    line-height: 1.3;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-}
 
 /* ── Empty State ──────────────────────────────────────────────── */
 .tl-tools-empty-state-container {
@@ -426,11 +347,6 @@
     .tl-tools-main-content-column {
         padding: 1.25rem 1rem 2rem;
         width: 100%;
-    }
-
-    /* Hide the decorative image scroll panel on mobile */
-    .tl-tools-image-scroll-panel {
-        display: none;
     }
 
     /* Tools grid: 1 column on phone */
@@ -471,36 +387,6 @@
 }
 </style>
 
-{% set tl_tool_images = [
-    ('01_anti_corruption_agency.jpg',          'Anti-corruption agency',             'https://images.pexels.com/photos/5668858/pexels-photo-5668858.jpeg'),
-    ('02_ombudsmen.jpg',                        'Ombudsmen',                          'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg'),
-    ('03_audit_institutions.jpg',               'Audit institutions',                 'https://images.pexels.com/photos/669615/pexels-photo-669615.jpeg'),
-    ('04_strengthening_judicial_institutions.jpg','Strengthening judicial institutions','https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg'),
-    ('05_national_anti_corruption_commissions.jpg','National anti-corruption commissions','\static\assets\tools\05_national_anti_corruption_commissions.jpg'),
-    ('06_empowering_local_governments.jpg',     'Empowering local governments',       '\static\assets\tools\06_empowering_local_governments.jpg'),
-    ('07_strengthening_legislatures.jpg',       'Strengthening legislatures',         '\static\assets\tools\07_strengthening_legislatures.jpg'),
-    ('08_monitoring_authority_for_contracts.jpg','Monitoring authority for contracts', 'https://images.pexels.com/photos/3760067/pexels-photo-3760067.jpeg'),
-    ('09_procurement_process_reform.jpg',       'Procurement process reform',         'https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg'),
-    ('10_simplification_of_bureaucracy.jpg',    'Simplification of bureaucracy',      'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg'),
-    ('11_reducing_discretion.jpg',              'Reducing discretion',                'https://images.pexels.com/photos/5669602/pexels-photo-5669602.jpeg'),
-    ('12_access_to_information.jpg',            'Access to information',              'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg'),
-    ('13_public_awareness_campaign.jpg',        'Public awareness campaign',          'https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg'),
-    ('14_media_training.jpg',                   'Media training',                     '\static\assets\tools\14_media_training.jpg'),
-    ('15_joint_gov_civil_bodies.jpg',           'Joint gov/civil bodies',             'https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg'),
-    ('16_public_complaints.jpg',                'Public complaints',                  'https://images.pexels.com/photos/3184306/pexels-photo-3184306.jpeg'),
-    ('17_citizens_charters.jpg',                'Citizens charters',                  'https://images.pexels.com/photos/3184639/pexels-photo-3184639.jpeg'),
-    ('18_financial_investigations.jpg',         'Financial investigations',           'https://images.pexels.com/photos/6694543/pexels-photo-6694543.jpeg'),
-    ('19_integrity_testing.jpg',                'Integrity testing',                  'https://images.pexels.com/photos/2566581/pexels-photo-2566581.jpeg'),
-    ('20_international_legal_instruments.jpg',  'International legal instruments',    '\static\assets\tools\20_international_legal_instruments.jpg'),
-    ('21_national_legal_instruments.jpg',       'National legal instruments',         'https://images.pexels.com/photos/5668859/pexels-photo-5668859.jpeg'),
-    ('22_anti_money_laundering.jpg',            'Anti-money laundering',              'https://images.pexels.com/photos/210607/pexels-photo-210607.jpeg'),
-    ('23_whistleblower_protection.jpg',         'Whistleblower protection',           '\static\assets\tools\23_whistleblower_protection.jpg'),
-    ('24_civil_service_reform.jpg',             'Civil service reform',               'https://images.pexels.com/photos/3184396/pexels-photo-3184396.jpeg'),
-    ('25_codes_of_conduct.jpg',                 'Codes of conduct',                   'https://images.pexels.com/photos/3184298/pexels-photo-3184298.jpeg'),
-    ('26_public_financial_disclosures.jpg',     'Public financial disclosures',       'https://images.pexels.com/photos/6693656/pexels-photo-6693656.jpeg'),
-    ('27_results_based_management.jpg',         'Results-based management',           'https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg'),
-    ('28_employee_incentives.jpg',              'Employee incentives',                'https://images.pexels.com/photos/3184299/pexels-photo-3184299.jpeg')
-] %}
 
 <!-- Tool detail modal (shared, outside the layout) -->
 <div class="tl-tool-detail-modal-overlay" id="tl-tool-detail-modal-overlay">
@@ -590,33 +476,6 @@
 
     </div>
 
-    <!-- ── Right: infinite scroll image panel ───────────────────── -->
-    <aside class="tl-tools-image-scroll-panel">
-        <div class="tl-scroll-track-outer">
-            <!-- Doubled for seamless infinite loop -->
-            <div class="tl-scroll-track-inner" id="tl-scroll-track">
-                {% for filename, label, fallback_url in tl_tool_images %}
-                <div class="tl-scroll-image-card">
-                    <img src="{{ url_for('static', filename='assets/tools/' + filename) }}"
-                         alt="{{ label }}"
-                         onerror="this.src='{{ fallback_url }}'">
-                    <div class="tl-scroll-image-card-overlay"></div>
-                    <div class="tl-scroll-image-card-label">{{ label }}</div>
-                </div>
-                {% endfor %}
-                <!-- Duplicate set for seamless loop -->
-                {% for filename, label, fallback_url in tl_tool_images %}
-                <div class="tl-scroll-image-card">
-                    <img src="{{ url_for('static', filename='assets/tools/' + filename) }}"
-                         alt="{{ label }}"
-                         onerror="this.src='{{ fallback_url }}'">
-                    <div class="tl-scroll-image-card-overlay"></div>
-                    <div class="tl-scroll-image-card-label">{{ label }}</div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </aside>
 
 </div>
 

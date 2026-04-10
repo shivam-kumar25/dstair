@@ -462,103 +462,6 @@
         
     }
 
-    /* ── Right Context Panel ─────────────────────────────────────── */
-    .qn-right-sphere-context-panel {
-        width: 240px;
-        flex-shrink: 0;
-        background: #fff;
-        border-left: 1px solid #E5E7EB;
-        position: sticky;
-        top: 137px;
-        max-height: calc(100vh - 137px);
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Image block — taller, with overlaid sphere name */
-    .qn-context-panel-sphere-image-wrapper {
-        position: relative;
-        width: 100%;
-        height: 300px;
-        overflow: hidden;
-        background: #022C22;
-        flex-shrink: 0;
-    }
-    .qn-context-panel-sphere-actual-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: none;
-        transition: transform 0.6s ease;
-    }
-    .qn-right-sphere-context-panel:hover .qn-context-panel-sphere-actual-image {
-        transform: scale(1.03);
-    }
-    .qn-context-panel-sphere-fallback-gradient {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(145deg, #022C22 0%, #064E3B 60%, #059669 100%);
-    }
-    .qn-context-panel-sphere-fallback-monogram {
-        font-family: 'Outfit', sans-serif;
-        font-size: 7rem;
-        font-weight: 900;
-        color: rgba(255,255,255,0.12);
-        line-height: 1;
-        letter-spacing: -0.05em;
-        user-select: none;
-    }
-
-    /* Gradient overlay over image for text legibility */
-    .qn-context-panel-image-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to top, rgba(2,44,34,0.048) 0%, rgba(2,44,34,0.02) 55%, transparent 100%);
-        pointer-events: none;
-    }
-    /* Sphere name overlaid on image */
-    .qn-context-panel-image-title-block {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1rem 1.25rem;
-    }
-    .qn-context-panel-currently-viewing-eyebrow {
-        font-size: 0.55rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.18em;
-        color: rgba(255,255,255,0.55);
-        margin-bottom: 0.2rem;
-    }
-    .qn-context-panel-sphere-display-name {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 900;
-        color: #fff;
-        letter-spacing: -0.03em;
-        line-height: 1.15;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        background-color: rgba(220, 142, 32, 0.98);
-        padding: 0.25rem 0.5rem;
-        border-radius: 8px;
-    }
-
-    /* Description section */
-    .qn-context-panel-sphere-meta-content {
-        padding: 1.1rem 1.25rem 0.75rem;
-        flex: 1;
-    }
-    .qn-context-panel-sphere-description-paragraph {
-        font-size: 0.85rem;
-        color: #4B5563;
-        line-height: 1.7;
-    }
 
     /* ── Mobile Responsive ───────────────────────────────────────── */
     @media (max-width: 768px) {
@@ -636,9 +539,6 @@
             font-size: 1rem;
         }
 
-
-        /* Hide decorative right panel entirely on mobile */
-        .qn-right-sphere-context-panel { display: none; }
 
         /* Questions column — reduce padding */
         .qn-questions-scrollable-column {
@@ -908,32 +808,6 @@
         {% endfor %}
     </main>
 
-    <!-- ── Right Context Panel ───────────────────────────────────── -->
-    <aside class="qn-right-sphere-context-panel" id="qn-right-sphere-context-panel">
-
-        <!-- Image + overlaid title -->
-        <div class="qn-context-panel-sphere-image-wrapper">
-            <img id="qn-context-panel-sphere-actual-image"
-                 class="qn-context-panel-sphere-actual-image"
-                 src="" alt=""
-                 onload="this.style.display='block'; document.getElementById('qn-context-panel-sphere-fallback-gradient-div').style.display='none';"
-                 onerror="this.style.display='none'; document.getElementById('qn-context-panel-sphere-fallback-gradient-div').style.display='flex';">
-            <div id="qn-context-panel-sphere-fallback-gradient-div"
-                 class="qn-context-panel-sphere-fallback-gradient">
-                <span id="qn-context-panel-sphere-fallback-monogram-letter"
-                      class="qn-context-panel-sphere-fallback-monogram">C</span>
-            </div>
-            <div class="qn-context-panel-image-overlay"></div>
-            
-        </div>
-
-        <!-- Description -->
-        <div class="qn-context-panel-sphere-meta-content">
-            <div class="qn-context-panel-sphere-description-paragraph" id="qn-context-panel-sphere-desc-text"></div>
-        </div>
-
-
-    </aside>
 
 </div>
 <script>

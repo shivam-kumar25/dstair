@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}400 Bad Request - DSTAIR{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-page {
+        min-height: 100vh;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 10;
+        padding: 8rem 1.5rem 5rem;
+    }
+    .error-page__bg {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+        background: linear-gradient(to bottom right, #FFF0E0, #F7F7F5, #F0F5FF);
+    }
+    .error-page__orb {
+        position: absolute;
+        border-radius: 50%;
+        width: 50vw;
+        height: 50vw;
+        filter: blur(150px);
+        opacity: 0.6;
+    }
+    .error-card {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 3rem;
+        border-radius: 3rem;
+        border: 4px solid #fca5a5;
+        backdrop-filter: blur(10px);
+        background: linear-gradient(to bottom right, rgba(255,255,255,0.95), rgba(255,241,242,0.85));
+        box-shadow: 0 30px 60px rgba(239,68,68,0.12), inset 0 0 20px rgba(255,255,255,0.8);
+        position: relative;
+        z-index: 10;
+    }
+    .error-icon {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        background: #fef2f2;
+        border: 2px solid #fca5a5;
+        color: #ef4444;
+    }
+    .error-code {
+        font-family: Outfit, sans-serif;
+        font-size: 4rem;
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        color: #0A192F;
+        margin-bottom: 1rem;
+    }
+    .error-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0A192F;
+        margin-bottom: 1.5rem;
+    }
+    .error-message {
+        color: rgba(10, 25, 47, 0.6);
+        font-size: 1.125rem;
+        line-height: 1.75;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
+    }
+    .error-cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(239,68,68,0.2);
+    }
+    .error-cta:hover {
+        background: linear-gradient(135deg, #b91c1c, #991b1b);
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(239,68,68,0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-page__bg">
+        <div class="error-page__orb" style="top:20%;left:-10%;background:rgba(239,68,68,0.08);"></div>
+    </div>
+    <div class="error-card">
+        <div class="error-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+        </div>
+        <h1 class="error-code">400</h1>
+        <h2 class="error-title">Bad Request</h2>
+        <p class="error-message">
+            The request could not be understood or was missing required parameters.
+            Please check your input and try again.
+        </p>
+        <a href="{{ url_for('public.home') }}" class="error-cta">
+            Return to Command Center
+        </a>
+    </div>
+</section>
+{% endblock %}

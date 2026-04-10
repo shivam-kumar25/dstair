@@ -8,7 +8,7 @@ dashboard_bp = Blueprint('dashboard', __name__)
 analysis_service = AnalysisService()
 logger = logging.getLogger(__name__)
 
-@dashboard_bp.route('/regular_user/<username>/dashboard')
+@dashboard_bp.route('/regular_user/<string:username>/dashboard')
 @login_required
 def index(username):
     """

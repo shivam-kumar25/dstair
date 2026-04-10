@@ -4,347 +4,189 @@
 
 {% block extra_css %}
 <style>
-    /* ==========================================================================
-   Authentication Styles — Login Page
-   ========================================================================== */
-
-    .auth-page {
+    /* ── Page shell ─────────────────────────────────────────────── */
+    .login-page {
         min-height: 100vh;
-        position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(to bottom right, #FFF0E0, #F7F7F5, #F0F5FF);
-        overflow: hidden;
+        padding: 2rem 1.25rem;
+        background:
+            linear-gradient(rgba(5, 10, 20, 0.72), rgba(5, 10, 20, 0.82)),
+            url("{{ url_for('static', filename='assets/login.png') }}") center / cover no-repeat;
     }
 
-    .auth-page__orb {
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-    }
-
-    .auth-page__orb--top-left {
-        top: -20%;
-        left: -10%;
-        width: 60vw;
-        height: 60vw;
-        background: rgba(217, 119, 6, 0.1);
-        filter: blur(150px);
-        opacity: 0.6;
-    }
-
-    .auth-page__orb--bottom-right {
-        bottom: -20%;
-        right: -10%;
-        width: 50vw;
-        height: 50vw;
-        background: rgba(255, 255, 255, 0.4);
-        filter: blur(120px);
-        opacity: 0.8;
-        animation: auth-pulse 8s ease-in-out infinite;
-    }
-
-    @keyframes auth-pulse {
-        0%, 100% { opacity: 0.8; }
-        50%       { opacity: 0.5; }
-    }
-
-    .auth-container {
-        position: relative;
-        z-index: 10;
+    /* ── Centered wrapper ───────────────────────────────────────── */
+    .login-wrap {
         width: 100%;
-        max-width: 28rem;
-        padding: 0 1.5rem;
-    }
-
-    .auth-logo-block {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .auth-logo-link {
+        max-width: 26rem;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        outline: none;
+        gap: 2rem;
     }
 
-    .auth-logo {
-        width: 9rem;
-        height: 9rem;
-        border-radius: 1rem;
-        background: white;
-        border: 1px solid rgba(10, 25, 47, 0.1);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.75rem;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.5s ease;
-    }
-
-    .auth-logo:hover { transform: scale(1.05); }
-
-    .auth-logo__shimmer {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom right, rgba(217, 119, 6, 0.1), transparent);
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
-
-   
-
-    .auth-logo img {
+    /* ── Card ───────────────────────────────────────────────────── */
+    .login-card {
         width: 100%;
-        height: 100%;
-        object-fit: contain;
-        position: relative;
-        z-index: 10;
+        background: #ffffff;
+        border-radius: 1.5rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
     }
 
-    .auth-brand-title {
-        font-family: Outfit, sans-serif;
-        font-weight: 700;
-        font-size: 1.875rem;
-        letter-spacing: -0.025em;
-        color: #0A192F;
-        transition: color 0.3s ease;
-        text-align: center;
-    }
-
-   
-
-    .auth-card {
-        border-radius: 2rem;
-        padding: 2rem;
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.85);
-        border: 1px solid rgba(10, 25, 47, 0.08);
-        box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-    }
-
-    @media (min-width: 768px) {
-        .auth-card { padding: 2.5rem; }
-    }
-
-    .auth-form {
+    /* ── Form fields ────────────────────────────────────────────── */
+    .login-form {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1.375rem;
     }
 
-    .auth-input-group {
+    .login-field {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
     }
 
-    .auth-input-label {
-        display: block;
-        font-size: 0.625rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: rgba(201, 201, 201, 0.98) ;
-        padding-left: 0.25rem;
-        transition: color 0.3s ease;
+    .login-label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #374151;
+        letter-spacing: 0.01em;
     }
 
-    .auth-input-group:focus-within .auth-input-label { color: #D97706; }
-
-    .auth-input-wrapper { position: relative; }
-
-    .auth-input {
-        width: 100%;
-        background: rgba(194, 119, 49, 0.5);
-        border: 1px solid rgba(10, 25, 47, 0.1);
-        border-radius: 0.75rem;
-        padding: 0.875rem 1rem 0.875rem 3rem;
-        font-size: 0.875rem;
-        color: #0A192F;
-        transition: all 0.3s ease;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    .login-input-wrap {
+        position: relative;
     }
 
-    .auth-input::placeholder { color: rgba(10, 25, 47, 0.3); }
-
-    .auth-input:focus {
-        outline: none;
-        border-color: #D97706;
-        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
-        background: white;
-    }
-
-    .auth-input-icon {
+    .login-input-icon {
         position: absolute;
-        inset: 0;
-        left: 0;
-        padding-left: 1rem;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
         display: flex;
         align-items: center;
         pointer-events: none;
-        color: rgba(10, 25, 47, 0.9) !important;
-        transition: color 0.3s ease;
+        transition: color 0.2s;
     }
 
-    .auth-input:focus ~ .auth-input-icon,
-    .auth-input-wrapper:focus-within .auth-input-icon { color: #D97706; }
-
-    .auth-submit {
-        position: relative;
+    .login-input {
         width: 100%;
-        overflow: hidden;
-        background: linear-gradient(to right, #D97706, #ea580c);
-        color: white;
-        font-weight: 700;
-        font-size: 0.875rem;
-        padding: 1rem;
+        height: 3.25rem;
+        padding: 0 1rem 0 3rem;
+        font-size: 1rem;
+        color: #0f172a;
+        background: #f8fafc;
+        border: 1.5px solid #e2e8f0;
         border-radius: 0.75rem;
-        border: 1px solid #f59e0b;
-        box-shadow: 0 8px 30px rgba(217, 119, 6, 0.3);
-        cursor: pointer;
-        transition: all 0.3s ease;
+        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        appearance: none;
+        -webkit-appearance: none;
     }
 
-    .auth-submit:hover {
-        background: linear-gradient(to right, #ea580c, #dc2626);
-        transform: translateY(-2px);
+    .login-input::placeholder {
+        color: #94a3b8;
+        font-size: 0.9375rem;
     }
 
-    .auth-submit:disabled { opacity: 0.7; cursor: wait; }
-
-    .auth-submit__content {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
+    .login-input:focus {
+        outline: none;
+        background: #fff;
+        border-color: #d97706;
+        box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
     }
 
-    .auth-submit__arrow {
-        opacity: 0.5;
-        transition: transform 0.3s ease;
+    .login-input:focus ~ .login-input-icon {
+        color: #d97706;
     }
 
-    .auth-submit:hover .auth-submit__arrow { transform: translateX(0.25rem); }
-
-    .auth-submit__spinner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
-    }
-
-    .auth-footer {
-        margin-top: 2rem;
-        text-align: center;
-    }
-
-    .auth-footer__text {
-        font-size: 0.75rem;
-        color: rgba(10, 25, 47, 0.4);
-        font-weight: 500;
-    }
-
-    .auth-footer__link {
-        color: rgba(10, 25, 47, 0.6);
-        text-decoration: underline;
-        text-decoration-color: rgba(10, 25, 47, 0.2);
-        text-underline-offset: 4px;
-        transition: color 0.3s ease;
+    /* ── Submit button ──────────────────────────────────────────── */
+    .login-submit {
+        width: 100%;
+        height: 3.25rem;
         margin-top: 0.5rem;
-        display: inline-block;
+        background: linear-gradient(135deg, #d97706, #ea580c);
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        border: none;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 6px 20px rgba(217, 119, 6, 0.35);
+        transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
     }
 
-    .auth-footer__link:hover { color: #D97706; }
+    .login-submit:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(217, 119, 6, 0.45);
+    }
 
-    @keyframes auth-slide-up {
-        from { opacity: 0; transform: translateY(1rem); }
+    .login-submit:active:not(:disabled) {
+        transform: translateY(0);
+    }
+
+    .login-submit:disabled {
+        opacity: 0.7;
+        cursor: wait;
+    }
+
+    /* ── Spinner ────────────────────────────────────────────────── */
+    .login-spinner {
+        width: 1.25rem;
+        height: 1.25rem;
+        animation: login-spin 0.8s linear infinite;
+    }
+
+    @keyframes login-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* ── Footer link ────────────────────────────────────────────── */
+    .login-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.8125rem;
+        color: #94a3b8;
+    }
+
+    .login-footer a {
+        color: #64748b;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.2s;
+    }
+
+    .login-footer a:hover {
+        color: #d97706;
+    }
+
+    /* ── Entry animation ────────────────────────────────────────── */
+    @keyframes login-rise {
+        from { opacity: 0; transform: translateY(1.25rem); }
         to   { opacity: 1; transform: translateY(0); }
     }
 
-    .animate-slide-up { animation: auth-slide-up 0.6s ease both; }
+    .login-card { animation: login-rise 0.5s ease both; }
 
-    @keyframes auth-spin { to { transform: rotate(360deg); } }
-    .auth-spinner-svg {
-        animation: auth-spin 1s linear infinite;
-        height: 1.25rem;
-        width: 1.25rem;
-        color: rgba(255, 255, 255, 0.5);
-    }
-    .auth-spinner-track { opacity: 0.25; }
-    .auth-spinner-head  { opacity: 0.75; }
-
-    .auth-logo-text  { text-align: center; }
-    .auth-submit-wrap { padding-top: 0.5rem; }
-
-    /* ==========================================================================
-       Background image override
-       ========================================================================== */
-    #dstair-login-page-wrapper {
-        background:
-            linear-gradient(rgba(2, 8, 5, 0.30), rgba(2, 8, 5, 0.75)),
-            url("{{ url_for('static', filename='assets/login.png') }}") center / cover no-repeat !important;
-    }
-
-    #dstair-login-page-wrapper .auth-brand-title  { color: #000000 !important; }
-    #dstair-login-page-wrapper .auth-brand-subtitle { color: rgba(255,255,255,0.55) !important; }
-
-    #dstair-login-page-wrapper .auth-logo {
-        background: #ffffff !important;
-        border: 1px solid rgba(255,255,255,0.4) !important;
-        box-shadow: 0 8px 28px rgba(0,0,0,0.35) !important;
-    }
-
-    #dstair-login-page-wrapper .auth-input-label { color: rgba(255,255,255,0.95) !important; }
-
-    #dstair-login-page-wrapper .auth-input {
-        background: rgba(255,255,255,0.9) !important;
-        border: 1px solid rgba(255,255,255,0.9) !important;
-        color: #ffffff !important;
-    }
-
-    #dstair-login-page-wrapper .auth-input::placeholder { color: rgba(255,255,255,0.35) !important; }
-
-    #dstair-login-page-wrapper .auth-input:focus {
-        border-color: rgba(255,255,255,0.5) !important;
-        box-shadow: 0 0 0 4px rgba(255,255,255,0.08) !important;
-        background: rgba(255,255,255,0.15) !important;
-    }
-
-    #dstair-login-page-wrapper .auth-input-icon { color: rgba(165, 29, 29, 0.95) !important; }
-    #dstair-login-page-wrapper .auth-input:focus ~ .auth-input-icon,
-    #dstair-login-page-wrapper .auth-input-wrapper:focus-within .auth-input-icon {
-        color: rgba(255,255,255,0.7) !important;
-    }
-
-    #dstair-login-page-wrapper .auth-card {
-        background: rgba(255,255,255,0.1) !important;
-        border: 1px solid rgba(255,255,255,0.18) !important;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.08) !important;
-        backdrop-filter: blur(20px) !important;
-    }
-
-    #dstair-login-page-wrapper .auth-footer__text,
-    #dstair-login-page-wrapper .auth-footer__link { color: rgba(255,255,255,0.45) !important; }
-    #dstair-login-page-wrapper .auth-footer__link:hover { color: #D97706 !important; }
-
-    /* Mobile polish */
-    @media (max-width: 480px) {
-        .auth-logo {
-            width: 6rem;
-            height: 6rem;
+    /* ── Mobile tweaks ──────────────────────────────────────────── */
+    @media (max-width: 400px) {
+        .login-card {
+            padding: 2rem 1.375rem;
         }
-        .auth-brand-title {
-            font-size: 1.5rem;
+
+        .login-brand-name {
+            font-size: 1.75rem;
         }
-        .auth-container {
-            padding: 0 1rem;
+    }
+
+    @media (min-width: 480px) {
+        .login-card {
+            padding: 2.75rem 2.5rem;
         }
     }
 </style>
@@ -353,82 +195,92 @@
 {% block navbar %}{% endblock %}
 
 {% block content %}
-<section id="dstair-login-page-wrapper" class="auth-page">
+<section class="login-page">
+    <div class="login-wrap">
 
-    <div class="auth-page__orb auth-page__orb--top-left"></div>
-    <div class="auth-page__orb auth-page__orb--bottom-right"></div>
-
-    <div class="auth-container">
-
-        <div class="auth-logo-block animate-slide-up">
-            <a href="{{ url_for('public.home') }}" class="auth-logo-link">
-                <div class="auth-logo">
-                    <div class="auth-logo__shimmer"></div>
-                    <img src="../../static/assets/general/logo.png" alt="DSTAIR">
-                </div>
-               
-            </a>
-        </div>
-
-        <div class="auth-card animate-slide-up">
-            <form action="{{ url_for('auth.login') }}" method="POST" class="auth-form"
-                  x-data="{ submitting: false }" @submit="submitting = true">
+        <!-- Card -->
+        <div class="login-card">
+            <form action="{{ url_for('auth.login') }}" method="POST" class="login-form" id="login-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                <div class="auth-input-group">
-                    <label for="username" class="auth-input-label" style="color: #000000;"><span style="color: #000000;;">Username</span></label>
-                    <div class="auth-input-wrapper">
-                        <div class="auth-input-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" >
+                <!-- Username -->
+                <div class="login-field">
+                    <label for="username" class="login-label">Username</label>
+                    <div class="login-input-wrap">
+                        <input type="text" id="username" name="username" required
+                               autocomplete="username" class="login-input"
+                               placeholder="Enter your username">
+                        <span class="login-input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                                 <circle cx="12" cy="7" r="4"/>
                             </svg>
-                        </div>
-                        <input type="text" id="username" name="username" required
-                               autocomplete="username" class="auth-input" placeholder="Enter your User ID">
+                        </span>
                     </div>
                 </div>
 
-                <div class="auth-input-group">
-                    <label for="password" class="auth-input-label" style="color: #000000;"><span style="color: #000000;;">Password</span></label>
-                    <div class="auth-input-wrapper">
-                        <div class="auth-input-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2">
+                <!-- Password -->
+                <div class="login-field">
+                    <label for="password" class="login-label">Password</label>
+                    <div class="login-input-wrap">
+                        <input type="password" id="password" name="password" required
+                               autocomplete="current-password" class="login-input"
+                               placeholder="Enter your password">
+                        <span class="login-input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                                 <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                             </svg>
-                        </div>
-                        <input type="password" id="password" name="password" required
-                               autocomplete="current-password" class="auth-input"
-                               placeholder="Enter your secure passkey">
+                        </span>
                     </div>
                 </div>
 
-                <div class="auth-submit-wrap">
-                    <button type="submit" :disabled="submitting" class="auth-submit">
-                        <span x-show="!submitting" class="auth-submit__content">
-                            Initialize Session
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" class="auth-submit__arrow">
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                                <polyline points="12 5 19 12 12 19"/>
-                            </svg>
-                        </span>
-                        <span x-show="submitting" x-cloak class="auth-submit__spinner">
-                            <svg class="auth-spinner-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="auth-spinner-track" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="auth-spinner-head" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Authenticating...
-                        </span>
-                    </button>
+                {% if error %}
+                <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:0.625rem;padding:0.75rem 1rem;font-size:0.875rem;color:#b91c1c;display:flex;align-items:center;gap:0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    {{ error }}
                 </div>
+                {% endif %}
+
+                <!-- Submit -->
+                <button type="submit" class="login-submit" id="login-btn">
+                    <span id="login-btn-idle" style="display:flex;align-items:center;gap:0.5rem;">
+                        Sign In
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </span>
+                    <span id="login-btn-loading" style="display:none;align-items:center;gap:0.625rem;">
+                        <svg class="login-spinner" xmlns="http://www.w3.org/2000/svg"
+                             fill="none" viewBox="0 0 24 24">
+                            <circle style="opacity:.25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"/>
+                            <path style="opacity:.75" fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                        </svg>
+                        Signing in...
+                    </span>
+                </button>
             </form>
+
+            <div class="login-footer">
+                Need access? <a href="{{ url_for('public.contact') }}">Contact your administrator</a>
+            </div>
         </div>
 
-        
     </div>
 </section>
+
+<script>
+document.getElementById('login-form').addEventListener('submit', function () {
+    var btn = document.getElementById('login-btn');
+    btn.disabled = true;
+    document.getElementById('login-btn-idle').style.display = 'none';
+    document.getElementById('login-btn-loading').style.display = 'flex';
+});
+</script>
 {% endblock %}
