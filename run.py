@@ -22,7 +22,17 @@ if __name__ == '__main__':
 
     if is_dev:
         print(f"  🔧 Starting DSTAIR in DEVELOPMENT mode on http://127.0.0.1:{port}")
-        app.run(debug=True, host='127.0.0.1', port=port)
+        import sys as _sys
+        _python_lib = os.path.dirname(_sys.executable)
+        app.run(
+            debug=True,
+            host='127.0.0.1',
+            port=port,
+            exclude_patterns=[
+                os.path.join(_python_lib, '*'),
+                os.path.join(_python_lib, 'Lib', '*'),
+            ]
+        )
     else:
         try:
             from waitress import serve
